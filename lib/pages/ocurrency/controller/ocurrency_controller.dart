@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:dartt_maat_v2/models/user_model.dart';
 import 'package:dartt_maat_v2/results/generics_result.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -509,12 +510,18 @@ class OcurrencyController extends GetxController {
         nascimento: procurador.nascimento);
 
     final userController = Get.find<UserController>();
-    ocurrency.user = userController.usuarioLogado;
+    ocurrency.user = UserModel(
+      id: userController.usuarioLogado!.id,
+      name: userController.usuarioLogado!.name,
+      cpf: userController.usuarioLogado!.cpf,
+      email: userController.usuarioLogado!.email,
+      typeUser: userController.usuarioLogado!.typeUser,
+    );
     ocurrency.dataOcorrencia = dataOcorrenciaController.text;
     ocurrency.cliente = cliente;
     ocurrency.fornecedores = listFornecedor;
     ocurrency.anexos = listAnexos;
-
+    ocurrency.previsao = Previsao(id: '0', name: 'No prazo');
     ocurrency.typeOcurrencyId = typeOcurrency;
     ocurrency.dataAt = ocurrency.dataRegistro;
     ComentarioModel comentarios = ComentarioModel(
@@ -587,10 +594,11 @@ class OcurrencyController extends GetxController {
     }, error: (message) {
       Get.snackbar(
         "Tente novamente",
-        "Erro ao buscar lista de canais",
-        backgroundColor: Colors.grey,
+        "Erro ao buscar lista de ocorrência ou não existe nenhuma ocorrência registrada!",
+        backgroundColor: Colors.yellow,
         snackPosition: SnackPosition.BOTTOM,
-        borderColor: Colors.indigo,
+        borderColor: Colors.yellow,
+        colorText: Colors.black,
         borderRadius: 0,
         borderWidth: 2,
         barBlur: 0,
@@ -619,7 +627,7 @@ class OcurrencyController extends GetxController {
                       fontSize: 14, fontWeight: pw.FontWeight.bold))),
           pw.Divider(),
           pw.Text('Protocolo: ${ocurrency.protocolo}'),
-          // pw.Text('Última atualização: ${ocurrency.dataAt}'),
+          pw.Text('Última atualização: ${ocurrency.dataAt}'),
           pw.Text('Data da reclamação: ${ocurrency.dataRegistro}'),
           pw.Text('Canal de atendimento: ${ocurrency.channel!.name}'),
           pw.Text('Solicitante: ${ocurrency.user!.name}'),
@@ -647,7 +655,7 @@ class OcurrencyController extends GetxController {
             pw.Column(children: [
               pw.Align(
                   alignment: pw.Alignment.center,
-                  child: pw.Text("Dados do Fornecedor ${ocurrency.fornecedores!.indexOf(fo)}",
+                  child: pw.Text("Dados do Fornecedor ${ocurrency.fornecedores!.indexOf(fo)+1}",
                       style: pw.TextStyle(
                           fontSize: 14, fontWeight: pw.FontWeight.bold))),
               pw.Text('CNPJ: ${fo.cnpj}'),

@@ -20,3 +20,5 @@ const linearGreen = LinearGradient(
     end: FractionalOffset(1.0, 0.0),
     stops: [0.0, 1.0],
     tileMode: TileMode.clamp);
+
+const timePrevision = 10;    

@@ -333,7 +333,7 @@ class _ScreenDetailState extends State<ScreenDetail> {
                         Align(
                             alignment: Alignment.center,
                             child: Text(
-                                'Dados do Fornecedor ${widget.ocurrency.fornecedores!.indexOf(item)}',
+                                'Dados do Fornecedor ${widget.ocurrency.fornecedores!.indexOf(item)+1}',
                                 style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold))),

@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/page_routes/app_routes.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_form.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,10 +15,11 @@ class OcurrencyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  
     return GestureDetector(
-      onTap: () => Get.toNamed(PageRoutes.ocurrencyDetail, arguments: ocurrencyReceived),
+      onTap: () =>
+          Get.toNamed(PageRoutes.ocurrencyDetail, arguments: ocurrencyReceived),
       child: Card(
+        clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -26,6 +30,15 @@ class OcurrencyListTile extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Row(
                   children: [
+Transform.rotate(
+                        angle: 45.0 * (-math.pi / 180.0),
+                        origin: const Offset(-100.0, 100.0),
+                        child:  Container(
+                          color: Colors.red,
+                          width: 200,
+                          height: 200,
+                        ),
+                      ),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -81,13 +94,13 @@ class OcurrencyListTile extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        /*Get.find<OcurrencyController>()
+                        Get.find<OcurrencyController>()
                             .setOcurrency(ocurrencyReceived);
                         showDialog(
                             context: context,
                             builder: (_) {
                               return const OcurrencyFormScreen();
-                            });*/
+                            });
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 4, right: 6),
