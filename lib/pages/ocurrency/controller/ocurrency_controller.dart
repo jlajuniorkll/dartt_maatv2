@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:dartt_maat_v2/config/const.dart';
 import 'package:dartt_maat_v2/models/cliente_model.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,10 +15,15 @@ class OcurrencyController extends GetxController {
   final GlobalKey<FormState> formKeyAdress = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyProcurador = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyDescription = GlobalKey<FormState>();
+  final List<GlobalKey<FormState>> formKeyFornecedor =
+      List<GlobalKey<FormState>>.generate(
+          12, (index) => GlobalKey(debugLabel: 'key_$index'),
+          growable: false);
 
   List<FornecedorModel> listFornecedor = [];
   OcurrencyModel ocurrency = OcurrencyModel();
   ClienteModel cliente = ClienteModel();
+  late FornecedorModel forn;
 
   bool isLoading = false;
   bool whithProcurador = false;
@@ -33,14 +37,7 @@ class OcurrencyController extends GetxController {
   TextEditingController cidadeController = TextEditingController();
   TextEditingController estadoController = TextEditingController();
   TextEditingController cepController = TextEditingController();
-  final List<GlobalKey<FormState>> formKeyFornecedor =
-      List.generate(10, (i) => GlobalKey<FormState>());
-  List<TextEditingController> cnpjController =
-      List.generate(10, (i) => TextEditingController());
-  List<TextEditingController> fantasiaController =
-      List.generate(10, (i) => TextEditingController());
-  List<TextEditingController> fornecedorController =
-      List.generate(10, (i) => TextEditingController());
+  TextEditingController cnpjController = TextEditingController();
 
   int typeLocation = 0;
 
@@ -61,20 +58,6 @@ class OcurrencyController extends GetxController {
 
   void setTypeLocation(int value) {
     typeLocation = value;
-    update();
-  }
-
-  void setAddListFornecedor() {
-    if (listFornecedor.length >= 9) {
-      Get.snackbar('Erro!', "O limite máximo são 10 CNPJ!",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: Colors.white,
-          backgroundGradient: linearBlue,
-          duration: const Duration(seconds: 3),
-          margin: const EdgeInsets.only(bottom: 8));
-    } else {
-      listFornecedor.add(FornecedorModel());
-    }
     update();
   }
 
@@ -139,25 +122,76 @@ class OcurrencyController extends GetxController {
     }
   }
 
+  Future<Map<String, dynamic>> fecthCnpj({required String cnpj}) async {
+    // https://receitaws.com.br/v1/cnpj/$cnpj
+    setLoading(true);
+    final response =
+        await http.get(Uri.parse('https://publica.cnpj.ws/cnpj/$cnpj'));
+    setLoading(false);
+    if (response.statusCode == 200) {
+      final res = json.decode(response.body);
+      return res;
+    } else {
+      final notCNPJ = jsonEncode({"erro": true});
+      return json.decode(notCNPJ);
+      // throw Exception('Não foi possível buscar o CNPJ!');
+    }
+  }
+
+  void setDataCNPJ(Map<String, dynamic> cnpj) {
+    String cnpjNumber;
+    String fornecedor;
+    String fantasia;
+    String email;
+    String telefone;
+    String ddd;
+    String situacao;
+    cnpjNumber = cnpj['estabelecimento']['cnpj'] as String;
+    situacao = cnpj['estabelecimento']['situacao_cadastral'] as String;
+    if (cnpj['razao_social'] != null) {
+      fornecedor = cnpj['razao_social'] as String;
+    } else {
+      fornecedor = "CNPJ Não econtrado";
+    }
+
+    if (cnpj['estabelecimento']['nome_fantasia'] != null) {
+      fantasia = cnpj['estabelecimento']['nome_fantasia'] as String;
+    } else {
+      fantasia = "Não possui fantasia";
+    }
+
+    if (cnpj['estabelecimento']['email'] != null) {
+      email = cnpj['estabelecimento']['email'] as String;
+    } else {
+      email = "Não possui email cadastrado";
+    }
+
+    if (cnpj['estabelecimento']['telefone1'] != null) {
+      telefone = cnpj['estabelecimento']['telefone1'] as String;
+      ddd = cnpj['estabelecimento']['ddd1'] as String;
+    } else {
+      telefone = "Não possui telefone cadastrado";
+      ddd = '';
+    }
+
+    forn = FornecedorModel(
+        cnpj: cnpjNumber,
+        fantasia: fantasia,
+        razaoSocial: fornecedor,
+        email: email,
+        telefone: '$ddd$telefone',
+        situacao: situacao);
+
+    listFornecedor.add(forn);
+    cnpjController.text = '';
+    update();
+  }
+
   void setEnderecoCEP(Map<String, dynamic> endereco) {
     logradouroController.text = endereco['logradouro'] as String;
     bairroController.text = endereco['bairro'] as String;
     cidadeController.text = endereco['localidade'] as String;
     estadoController.text = endereco['uf'] as String;
-    update();
-  }
-
-  void setEnderecoCNPJ(Map<String, dynamic> cnpj, int index) {
-    fornecedorController[index].text = cnpj['razao_social'] != null
-        ? cnpj['razao_social'] as String
-        : "CNPJ Não econtrado";
-    cnpj['estabelecimento']['nome_fantasia'] != null
-        ? fantasiaController[index].text =
-            cnpj['estabelecimento']['nome_fantasia'] as String
-        : fantasiaController[index].text = "Não possui fantasia";
-    listFornecedor[index].cnpj = cnpjController[index].text;
-    listFornecedor[index].fantasia = fantasiaController[index].text;
-    listFornecedor[index].razaoSocial = fornecedorController[index].text;
     update();
   }
 
@@ -210,21 +244,5 @@ class OcurrencyController extends GetxController {
 
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-  }
-
-  Future<Map<String, dynamic>> fecthCnpj({required String cnpj}) async {
-    // https://receitaws.com.br/v1/cnpj/$cnpj
-    setLoading(true);
-    final response =
-        await http.get(Uri.parse('https://publica.cnpj.ws/cnpj/$cnpj'));
-    setLoading(false);
-    if (response.statusCode == 200) {
-      final res = json.decode(response.body);
-      return res;
-    } else {
-      final notCNPJ = jsonEncode({"erro": true});
-      return json.decode(notCNPJ);
-      // throw Exception('Não foi possível buscar o CNPJ!');
-    }
   }
 }

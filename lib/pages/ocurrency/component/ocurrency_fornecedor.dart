@@ -12,129 +12,175 @@ class FormFornecedor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final utilsServices = UtilsServices();
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: GetBuilder<OcurrencyController>(
-          builder: (controller) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Dados do Fornecedor',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  alignment: Alignment.center,
-                  child: const Text.rich(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Dados do Fornecedor',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: const Text.rich(
+                TextSpan(
+                  children: [
                     TextSpan(
-                      children: [
-                        TextSpan(
-                            text:
-                                'Digite o CNPJ para preencher automaticamente os dados do fornecedor.'),
-                      ],
+                        text:
+                            'Digite o CNPJ para preencher automaticamente os dados do fornecedor.'),
+                  ],
+                ),
+              ),
+            ),
+            GetBuilder<OcurrencyController>(builder: (controller) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: CustomTextField(
+                        controller: controller.cnpjController,
+                        textInputType: TextInputType.number,
+                        label: 'Digite o CNPJ',
+                        inputFormatters: [utilsServices.cnpjFormatter],
+                        validator: cnpjValidator,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.listFornecedor.length,
-                    itemBuilder: (_, index) {
-                      return NewFormFornecedor(index: index);
-                    }),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: TextButton.icon(
-                      onPressed: () {
-                        controller
-                            .setAddListFornecedor();
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Adicionar outro CNPJ')),
-                ),
-              ],
-            );
-          },
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          final cnpjUnmasked =
+                              utilsServices.cnpjFormatter.getUnmaskedText();
+                          var cnpjEncontrado =
+                              await controller.fecthCnpj(cnpj: cnpjUnmasked);
+                          if (cnpjEncontrado['erro'] == true) {
+                            Get.snackbar(
+                                'Erro!', "Erro ao localizar o CEP informado!",
+                                snackPosition: SnackPosition.BOTTOM,
+                                colorText: Colors.white,
+                                backgroundGradient: linearBlue,
+                                duration: const Duration(seconds: 3),
+                                margin: const EdgeInsets.only(bottom: 8));
+                          } else {
+                            controller.setDataCNPJ(cnpjEncontrado);
+                          }
+                        },
+                        child: const SizedBox(
+                            height: 42,
+                            child: Center(child: Text("Adicionar")))),
+                  ),
+                ],
+              );
+            }),
+            const Divider(),
+            GetBuilder<OcurrencyController>(builder: (controller) {
+              return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: controller.listFornecedor.length,
+                  itemBuilder: (_, index) {
+                    return NovoFornecedorForm(
+                        fornecedor: controller.listFornecedor[index],
+                        index: index);
+                  });
+            }),
+          ],
         ));
   }
 }
 
-class NewFormFornecedor extends StatelessWidget {
-  const NewFormFornecedor({
-    super.key,
-    required this.index,
-  });
+// ignore: must_be_immutable
+class NovoFornecedorForm extends StatelessWidget {
+  NovoFornecedorForm(
+      {super.key, required this.fornecedor, required this.index});
 
-  final int index;
+  FornecedorModel fornecedor;
+  int index;
+  final utilsServices = UtilsServices();
 
   @override
   Widget build(BuildContext context) {
-    final utilsServices = UtilsServices();
-    return GetBuilder<OcurrencyController>(builder: (controller) {
-      return Form(
-        key: controller.formKeyFornecedor[index],
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
+    TextEditingController fantasiaController =
+        TextEditingController(text: '${fornecedor.fantasia}');
+    TextEditingController fornecedorController =
+        TextEditingController(text: '${fornecedor.razaoSocial}');
+    TextEditingController cnpjController =
+        TextEditingController(text: '${fornecedor.cnpj}');
+    TextEditingController telefoneController =
+        TextEditingController(text: '${fornecedor.telefone}');
+    TextEditingController emailController =
+        TextEditingController(text: '${fornecedor.email}');
+    TextEditingController situacaoController =
+        TextEditingController(text: '${fornecedor.situacao}');
+    return Form(
+      key: Get.find<OcurrencyController>().formKeyFornecedor[index],
+      child: Column(
+        children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: CustomTextField(
-              controller: controller.cnpjController[index],
-              textInputType: TextInputType.number,
-              label: 'CNPJ',
-              inputFormatters: [utilsServices.cnpjFormatter],
-              validator: cnpjValidator,
-              onChanged: (value) async {
-                if (value!.length == 18) {
-                  final cnpjUnmasked =
-                      utilsServices.cnpjFormatter.getUnmaskedText();
-                  var cnpjEncontrado = await controller.fecthCnpj(cnpj: cnpjUnmasked);
-                  if (cnpjEncontrado['erro'] == true) {
-                    Get.snackbar('Erro!', "Erro ao localizar o CNPJ informado!",
-                        snackPosition: SnackPosition.BOTTOM,
-                        colorText: Colors.white,
-                        backgroundGradient: linearBlue,
-                        duration: const Duration(seconds: 3),
-                        margin: const EdgeInsets.only(bottom: 8));
-                  } else {
-                    controller.setEnderecoCNPJ(cnpjEncontrado, index);
-                  }
-                }
-              },
-            ),
+            padding: const EdgeInsets.all(12.0),
+            child: Text('Fornecedor ${index + 1}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: CustomTextField(
-                controller: controller.fantasiaController[index],
-                label: 'Nome Fantasia',
-                validator: fantasiaValidator),
+          CustomTextField(
+            label: 'CNPJ',
+            controller: cnpjController,
+            textInputType: TextInputType.number,
+            inputFormatters: [utilsServices.cnpjFormatter],
+            validator: cnpjValidator,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: CustomTextField(
-                controller: controller.fornecedorController[index],
-                label: 'Fornecedor',
-                validator: fornecedorValidator),
+          CustomTextField(
+            label: 'Fantasia',
+            controller: fantasiaController,
+            validator: fantasiaValidator,
           ),
-          controller.listFornecedor.isNotEmpty
-              ? Align(
-                  alignment: Alignment.bottomRight,
-                  child: TextButton.icon(
-                      onPressed: () {
-                        controller.setremoveListFornecedor(controller.listFornecedor[index]);
-                      },
-                      icon: const Icon(Icons.remove),
-                      label: const Text('Remover CNPJ')),
-                )
-              : const SizedBox(),
+          CustomTextField(
+            label: 'Razão Social',
+            controller: fornecedorController,
+            validator: fornecedorValidator,
+          ),
+          CustomTextField(
+            label: 'Telefone',
+            controller: telefoneController,
+            textInputType: TextInputType.number,
+            inputFormatters: [utilsServices.foneFormatter],
+            validator: phoneValidator,
+          ),
+          CustomTextField(
+            label: 'Email',
+            controller: emailController,
+            textInputType: TextInputType.emailAddress,
+            validator: emailValidator,
+          ),
+          CustomTextField(
+            label: 'Situação',
+            controller: situacaoController,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+                onPressed: () {
+                  Get.find<OcurrencyController>()
+                      .setremoveListFornecedor(fornecedor);
+                },
+                icon: const Icon(
+                  Icons.delete_forever,
+                  color: Colors.red,
+                ),
+                label: const Text(
+                  'Excluir',
+                  style: TextStyle(color: Colors.red),
+                )),
+          ),
           const Divider(),
-          const SizedBox(
-            height: 16,
-          ),
-        ]),
-      );
-    });
+        ],
+      ),
+    );
   }
 }

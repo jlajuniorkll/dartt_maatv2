@@ -2,7 +2,7 @@ import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.da
 import 'package:dartt_maat_v2/pages/ocurrency/controller/pagecontroller.dart';
 import 'package:get/get.dart';
 
-class OcurrencyBinding extends Bindings{
+class OcurrencyBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(PageManager());
