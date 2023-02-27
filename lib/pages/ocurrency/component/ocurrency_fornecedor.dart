@@ -48,7 +48,6 @@ class FormFornecedor extends StatelessWidget {
                         textInputType: TextInputType.number,
                         label: 'Digite o CNPJ',
                         inputFormatters: [utilsServices.cnpjFormatter],
-                        validator: cnpjValidator,
                       ),
                     ),
                   ),
@@ -62,14 +61,15 @@ class FormFornecedor extends StatelessWidget {
                               await controller.fecthCnpj(cnpj: cnpjUnmasked);
                           if (cnpjEncontrado['erro'] == true) {
                             Get.snackbar(
-                                'Erro!', "Erro ao localizar o CEP informado!",
+                                'Erro!', "Erro ao localizar o CNPJ informado, digite manualmente os dados!",
                                 snackPosition: SnackPosition.BOTTOM,
                                 colorText: Colors.white,
                                 backgroundGradient: linearBlue,
-                                duration: const Duration(seconds: 3),
+                                duration: const Duration(seconds: 5),
                                 margin: const EdgeInsets.only(bottom: 8));
+                                controller.setDataCNPJ();
                           } else {
-                            controller.setDataCNPJ(cnpjEncontrado);
+                            controller.setDataCNPJ(cnpj: cnpjEncontrado);
                           }
                         },
                         child: const SizedBox(

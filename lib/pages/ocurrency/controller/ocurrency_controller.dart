@@ -1,5 +1,13 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:dartt_maat_v2/config/const.dart';
+import 'package:dartt_maat_v2/models/anexo_model.dart';
 import 'package:dartt_maat_v2/models/cliente_model.dart';
+import 'package:dartt_maat_v2/models/typeocurrency_model.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/repository/ocurrency_repository.dart';
+import 'package:dartt_maat_v2/pages/typeocurrency/controller/typeocurrency_controller.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -8,8 +16,10 @@ import 'package:dartt_maat_v2/models/fornecedor_model.dart';
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/services/loading_services.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class OcurrencyController extends GetxController {
+  final ocurrencyRepository = OcurrencyRepository();
   final GlobalKey<FormState> formKeyHeader = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyClient = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyAdress = GlobalKey<FormState>();
@@ -17,10 +27,11 @@ class OcurrencyController extends GetxController {
   final GlobalKey<FormState> formKeyDescription = GlobalKey<FormState>();
   final List<GlobalKey<FormState>> formKeyFornecedor =
       List<GlobalKey<FormState>>.generate(
-          12, (index) => GlobalKey(debugLabel: 'key_$index'),
+          10, (index) => GlobalKey(debugLabel: 'key_$index'),
           growable: false);
 
   List<FornecedorModel> listFornecedor = [];
+  List<AnexoModel> listAnexos = [];
   OcurrencyModel ocurrency = OcurrencyModel();
   ClienteModel cliente = ClienteModel();
   late FornecedorModel forn;
@@ -38,6 +49,47 @@ class OcurrencyController extends GetxController {
   TextEditingController estadoController = TextEditingController();
   TextEditingController cepController = TextEditingController();
   TextEditingController cnpjController = TextEditingController();
+  TextEditingController typeOcurrencyController = TextEditingController();
+
+  RxBool notSuggestion = true.obs;
+  double progress = 0.0;
+  String infoUpload = '';
+  bool notValidateAdress = false;
+
+  void setNotValidateAdress(bool value){
+    notValidateAdress = value;
+    update();
+  }
+
+  void setAnexos(AnexoModel value) {
+    listAnexos.add(value);
+    update();
+  }
+
+    void delAnexos(AnexoModel value) {
+    listAnexos.remove(value);
+    update();
+  }
+
+  void setProgress(double value) {
+    progress = value;
+    update();
+  }
+
+  void setInfoUpload(String value) {
+    infoUpload = value;
+    update();
+  }
+
+  void setSuggestion(bool value) {
+    notSuggestion.value = value;
+    update();
+  }
+
+  void setTypeOcurrecyController(String value) {
+    typeOcurrencyController.text = value;
+    update();
+  }
 
   int typeLocation = 0;
 
@@ -56,6 +108,10 @@ class OcurrencyController extends GetxController {
     update();
   }
 
+  void setTypeOcurrency(String value) {
+    update();
+  }
+
   void setTypeLocation(int value) {
     typeLocation = value;
     update();
@@ -67,36 +123,36 @@ class OcurrencyController extends GetxController {
   }
 
   String getDataHoraAtual() {
-    var dia = DateTime.now().day.toString();
-    var mes = DateTime.now().month.toString();
-    var ano = DateTime.now().year.toString();
-    var hora = DateTime.now().hour.toString();
-    var min = DateTime.now().minute.toString();
+    var dia = DateTime.now().day;
+    var mes = DateTime.now().month;
+    var ano = DateTime.now().year;
+    var hora = DateTime.now().hour;
+    var min = DateTime.now().minute;
     return '$dia/$mes/$ano - $hora:$min';
   }
 
   void setDataFato(DateTime value) {
-    var dia = value.day.toString();
-    var mes = value.month.toString();
-    var ano = value.year.toString();
+    var dia = value.day;
+    var mes = value.month;
+    var ano = value.year;
     String dataFato = '$dia/$mes/$ano';
     dataOcorrenciaController.text = dataFato;
     update();
   }
 
   void setDataNascimento(DateTime value) {
-    var dia = value.day.toString();
-    var mes = value.month.toString();
-    var ano = value.year.toString();
+    var dia = value.day;
+    var mes = value.month;
+    var ano = value.year;
     String dataNascimento = '$dia/$mes/$ano';
     dataNascimentoController.text = dataNascimento;
     update();
   }
 
   void setDataNascProcurador(DateTime value) {
-    var dia = value.day.toString();
-    var mes = value.month.toString();
-    var ano = value.year.toString();
+    var dia = value.day;
+    var mes = value.month;
+    var ano = value.year;
     String dataNascimento = '$dia/$mes/$ano';
     dataNascProcuradorController.text = dataNascimento;
     update();
@@ -138,52 +194,64 @@ class OcurrencyController extends GetxController {
     }
   }
 
-  void setDataCNPJ(Map<String, dynamic> cnpj) {
-    String cnpjNumber;
-    String fornecedor;
-    String fantasia;
-    String email;
-    String telefone;
-    String ddd;
-    String situacao;
-    cnpjNumber = cnpj['estabelecimento']['cnpj'] as String;
-    situacao = cnpj['estabelecimento']['situacao_cadastral'] as String;
-    if (cnpj['razao_social'] != null) {
-      fornecedor = cnpj['razao_social'] as String;
+  void setDataCNPJ({Map<String, dynamic>? cnpj}) {
+    if (listFornecedor.length > 10) {
+      Get.snackbar('Erro!',
+          "Você pode cadastrar somente 10 fornecedores. Caso precise de mais, entre em contato presencialmente!",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: Colors.white,
+          backgroundGradient: linearBlue,
+          duration: const Duration(seconds: 5),
+          margin: const EdgeInsets.only(bottom: 8));
     } else {
-      fornecedor = "CNPJ Não econtrado";
+      String cnpjNumber = '';
+      String fornecedor = '';
+      String fantasia = '';
+      String email = '';
+      String telefone = '';
+      String ddd = '';
+      String situacao = '';
+      if (cnpj != null) {
+        cnpjNumber = cnpj['estabelecimento']['cnpj'] as String;
+        situacao = cnpj['estabelecimento']['situacao_cadastral'] as String;
+        if (cnpj['razao_social'] != null) {
+          fornecedor = cnpj['razao_social'] as String;
+        } else {
+          fornecedor = "CNPJ Não econtrado";
+        }
+
+        if (cnpj['estabelecimento']['nome_fantasia'] != null) {
+          fantasia = cnpj['estabelecimento']['nome_fantasia'] as String;
+        } else {
+          fantasia = "Não possui fantasia";
+        }
+
+        if (cnpj['estabelecimento']['email'] != null) {
+          email = cnpj['estabelecimento']['email'] as String;
+        } else {
+          email = "Não possui email cadastrado";
+        }
+
+        if (cnpj['estabelecimento']['telefone1'] != null) {
+          telefone = cnpj['estabelecimento']['telefone1'] as String;
+          ddd = cnpj['estabelecimento']['ddd1'] as String;
+        } else {
+          telefone = "Não possui telefone cadastrado";
+          ddd = '';
+        }
+      }
+
+      forn = FornecedorModel(
+          cnpj: cnpjNumber,
+          fantasia: fantasia,
+          razaoSocial: fornecedor,
+          email: email,
+          telefone: '$ddd$telefone',
+          situacao: situacao);
+
+      listFornecedor.add(forn);
+      cnpjController.text = '';
     }
-
-    if (cnpj['estabelecimento']['nome_fantasia'] != null) {
-      fantasia = cnpj['estabelecimento']['nome_fantasia'] as String;
-    } else {
-      fantasia = "Não possui fantasia";
-    }
-
-    if (cnpj['estabelecimento']['email'] != null) {
-      email = cnpj['estabelecimento']['email'] as String;
-    } else {
-      email = "Não possui email cadastrado";
-    }
-
-    if (cnpj['estabelecimento']['telefone1'] != null) {
-      telefone = cnpj['estabelecimento']['telefone1'] as String;
-      ddd = cnpj['estabelecimento']['ddd1'] as String;
-    } else {
-      telefone = "Não possui telefone cadastrado";
-      ddd = '';
-    }
-
-    forn = FornecedorModel(
-        cnpj: cnpjNumber,
-        fantasia: fantasia,
-        razaoSocial: fornecedor,
-        email: email,
-        telefone: '$ddd$telefone',
-        situacao: situacao);
-
-    listFornecedor.add(forn);
-    cnpjController.text = '';
     update();
   }
 
@@ -244,5 +312,182 @@ class OcurrencyController extends GetxController {
 
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+  }
+
+  List<TypeOcurrencyModel> getSuggestions(String query) {
+    final controllerType = Get.find<TypeOcurrencyController>().allTypeOcurrency;
+    return controllerType;
+  }
+
+  Future<void> selectFile() async {
+    setProgress(0);
+    setInfoUpload('');
+    List<String> extensions = ['jpg', 'pdf', 'doc', 'png'];
+
+    FilePickerResult? results = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: extensions,
+    );
+
+    if (results != null) {
+      for (var result in results.files) {
+                String dateTimeNowOrder = _getDateTimeNowOrder();
+        PlatformFile file = result;
+        Uint8List? fileBytes = file.bytes;
+        String fileName = '${dateTimeNowOrder}z_z${file.name}';
+
+        final taskResult = await ocurrencyRepository.setFileFirebase(
+            fileBytes: fileBytes!, fileName: fileName);
+        taskResult.when(success: (data) {
+          data.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+            switch (taskSnapshot.state) {
+              case TaskState.running:
+                setProgress((100.0 *
+                        (taskSnapshot.bytesTransferred /
+                            taskSnapshot.totalBytes))
+                    .roundToDouble());
+                setInfoUpload("Carregando...$progress%.");
+                break;
+              case TaskState.paused:
+                setInfoUpload("Upload está pausado");
+                break;
+              case TaskState.canceled:
+                setInfoUpload("Upload está cancelado");
+                break;
+              case TaskState.error:
+                setInfoUpload("Erro ao realizar o upload");
+                break;
+              case TaskState.success:
+                setInfoUpload("Upload feito com sucesso!");
+                break;
+            }
+          });
+          data.whenComplete(() async {
+            final url = await data.snapshot.ref.getDownloadURL();
+            setAnexos(AnexoModel(name: fileName, url: url));
+          });
+        }, error: (message) {
+          Get.snackbar(
+            "Tente novamente",
+            message,
+            backgroundColor: Colors.grey,
+            snackPosition: SnackPosition.BOTTOM,
+            borderColor: Colors.indigo,
+            borderRadius: 0,
+            borderWidth: 2,
+            barBlur: 0,
+          );
+        });
+      }
+    }
+  }
+
+  Future<void> selectCamera() async {
+    setProgress(0);
+    setInfoUpload('');
+    final ImagePicker picker = ImagePicker();
+    final XFile? photo =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+        String dateTimeNowOrder = _getDateTimeNowOrder();
+    String fileName = '${dateTimeNowOrder}z_z${photo!.name}';
+
+    if (fileName != '') {
+      setLoading(true);
+      final fileBytes = await photo.readAsBytes();
+      setLoading(false);
+      final taskResult = await ocurrencyRepository.setFileFirebase(
+          fileBytes: fileBytes, fileName: fileName);
+
+      taskResult.when(success: (data) {
+        data.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+          switch (taskSnapshot.state) {
+            case TaskState.running:
+              setProgress((100.0 *
+                      (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes))
+                  .roundToDouble());
+              setInfoUpload("Carregando...$progress%.");
+              break;
+            case TaskState.paused:
+              setInfoUpload("Upload está pausado");
+              break;
+            case TaskState.canceled:
+              setInfoUpload("Upload está cancelado");
+              break;
+            case TaskState.error:
+              setInfoUpload("Erro ao realizar o upload");
+              break;
+            case TaskState.success:
+              setInfoUpload("Upload feito com sucesso!");
+              break;
+          }
+        });
+        data.whenComplete(() async {
+          final url = await data.snapshot.ref.getDownloadURL();
+          setAnexos(AnexoModel(name: fileName, url: url));
+        });
+      }, error: (message) {
+        Get.snackbar(
+          "Tente novamente",
+          message,
+          backgroundColor: Colors.grey,
+          snackPosition: SnackPosition.BOTTOM,
+          borderColor: Colors.indigo,
+          borderRadius: 0,
+          borderWidth: 2,
+          barBlur: 0,
+        );
+      });
+    }
+  }
+  Future<void> removeFileFirebase(AnexoModel anexo) async {
+    setLoading(true);    
+    final res = await ocurrencyRepository.removeFileFirebase(anexo.name!);
+    setLoading(false);
+    if(res){
+      delAnexos(anexo);
+    }else{
+      Get.snackbar(
+          "Tente novamente",
+          "Erro ao excluir o arquivo!",
+          backgroundColor: Colors.grey,
+          snackPosition: SnackPosition.BOTTOM,
+          borderColor: Colors.indigo,
+          borderRadius: 0,
+          borderWidth: 2,
+          barBlur: 0,
+        );
+    }
+  }
+
+  String _getDateTimeNowOrder(){
+    final dateNow = DateTime.now();
+    int year = dateNow.year;
+    int month = dateNow.month;
+    int day = dateNow.day;
+    int hour = dateNow.hour;
+    int minute = dateNow.minute;
+    int second = dateNow.second;
+    return '$year$month$day$hour$minute$second';
+  }
+
+  void finalizarReclamacao(){
+
+    // ocurrency.id; // ver
+    ocurrency.dataRegistro = getDataHoraAtual();
+    // ocurrency.dataAt;
+    // ocurrency.protocolo;
+    ocurrency.dataOcorrencia = dataOcorrenciaController.text;
+    // ocurrency.ocorrencia;
+    // ocurrency.previsao; // ver
+    // ocurrency.responsavel;
+    // ocurrency.channel;
+    // ocurrency.user;
+    // ocurrency.status;
+    ocurrency.cliente = cliente;
+    ocurrency.fornecedores = listFornecedor;
+    ocurrency.anexos = listAnexos;
+    // ocurrency.comentarios;
+    // ocurrency.typeOcurrencyId;
+
   }
 }

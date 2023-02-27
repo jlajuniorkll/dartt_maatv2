@@ -34,7 +34,7 @@ String? phoneValidator(String? phone) {
     return 'Digite um celular/whatsapp';
   }
 
-  if (!phone.isPhoneNumber || phone.length < 15) {
+  if (!phone.isPhoneNumber || phone.length < 10) {
     return 'Digite um número válido';
   }
 

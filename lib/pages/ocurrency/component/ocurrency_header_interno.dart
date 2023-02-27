@@ -13,6 +13,7 @@ class HeaderFormInterno extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<OcurrencyController>();
+    final userController = Get.find<UserController>();
     return Form(
       key: controller.formKeyHeader,
       child: Column(
@@ -23,58 +24,48 @@ class HeaderFormInterno extends StatelessWidget {
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Text("Usuário: ",
-                          style: TextStyle(fontWeight: FontWeight.w600)),
-                    ),
-                    GetBuilder<UserController>(builder: (userController) {
-                      return Text(
-                          userController.usuarioLogado!.name ?? "Não logado");
-                    }),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Text("Data Atual/Registro: ",
-                          style: TextStyle(fontWeight: FontWeight.w600)),
-                    ),
-                    Text(controller.getDataHoraAtual()),
-                  ],
-                ),
-                SizedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Row(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.only(right: 8.0),
-                          child: Text("Status: ",
-                              style: TextStyle(fontWeight: FontWeight.w600)),
-                        ),
-                        Text("Não carregado"),
-                      ],
-                    ),
-                  ),
-                ),
+                CustomTextField(
+                    label: "Usuário",
+                    iniValue:
+                        userController.usuarioLogado!.name ?? "Não logado",
+                    isInActive: true),
+                CustomTextField(
+                    label: "Data Atual/Registro",
+                    iniValue: controller.getDataHoraAtual(),
+                    isInActive: true),
+                const CustomTextField(
+                    label: "Status",
+                    iniValue: "Não carregado",
+                    isInActive: true),
                 GetBuilder<ChannelController>(
                   builder: (channelController) {
-                    return Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 8.0),
-                          child: Text("Canal: ",
-                              style: TextStyle(fontWeight: FontWeight.w600)),
+                    return Container(
+                      height: 42,
+                      decoration: const ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: Colors.grey),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(24.0)),
                         ),
-                        DropdownButtonHideUnderline(
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
                           child: DropdownButton<ChannelModel>(
+                            hint: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 22.0),
+                              child:
+                                  Text('Selecione o canal de atendimento...'),
+                            ),
+                            isDense: true,
+                            isExpanded: true,
                             borderRadius: BorderRadius.circular(18),
                             value: channelController.channnelSelected,
                             onChanged: (ChannelModel? newValue) {
@@ -86,28 +77,45 @@ class HeaderFormInterno extends StatelessWidget {
                               return DropdownMenuItem<ChannelModel>(
                                 value: e,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 22.0),
                                   child: Text(e.name!),
                                 ),
                               );
                             }).toList(),
                           ),
                         ),
-                      ],
+                      ),
                     );
                   },
                 ),
+                const SizedBox(
+                  height: 12,
+                ),
                 GetBuilder<UserController>(
                   builder: (userManager) {
-                    return Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 8.0),
-                          child: Text("Responsável: ",
-                              style: TextStyle(fontWeight: FontWeight.w600)),
+                    return Container(
+                      height: 42,
+                      decoration: const ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: Colors.grey),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(18.0)),
                         ),
-                        DropdownButtonHideUnderline(
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
                           child: DropdownButton<UserModel>(
+                            hint: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 22.0),
+                              child: Text('Selecione o responsável...'),
+                            ),
+                            isDense: true,
+                            isExpanded: true,
                             borderRadius: BorderRadius.circular(18),
                             value: userManager.responsavelSelected,
                             onChanged: (UserModel? newValue) {
@@ -119,25 +127,28 @@ class HeaderFormInterno extends StatelessWidget {
                               return DropdownMenuItem<UserModel>(
                                 value: e,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 22.0),
                                   child: Text(e.name!),
                                 ),
                               );
                             }).toList(),
                           ),
                         ),
-                      ],
+                      ),
                     );
                   },
                 ),
               ],
             ),
           ),
+          const SizedBox(
+            height: 12,
+          ),
           GetBuilder<OcurrencyController>(
             builder: (controller) {
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: InkWell(
                   onTap: () {
                     showDatePicker(

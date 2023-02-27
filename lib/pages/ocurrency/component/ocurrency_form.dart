@@ -1,4 +1,5 @@
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_adress.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_anexos.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_description.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_finish.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_fornecedor.dart';
@@ -21,7 +22,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
     with SingleTickerProviderStateMixin {
   final controller = Get.find<PageManager>();
   final controllerOcurrency = Get.find<OcurrencyController>();
-  final int qtdPages = 5;
+  final int qtdPages = 6;
 
   @override
   void initState() {
@@ -39,7 +40,8 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
         child: SizedBox(
           width: isMobile ? widhtMobile : widhtWeb,
           child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -50,6 +52,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                       child: IconButton(
                         onPressed: () {
                           Get.back();
+                          controller.setPage(0);
                         },
                         icon: const Icon(Icons.close),
                       )),
@@ -63,6 +66,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                     FormAdress(),
                     const FormFornecedor(),
                     const FormDescription(),
+                    const FormAnexos(),
                   ],
                 ),
                 Padding(
@@ -112,20 +116,20 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                               ),
                             )
                           : Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SizedBox(
                                 height: 32,
                                 width: 120,
                                 child: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: controllerOcurrency.listAnexos.isNotEmpty ? () {
                                     Get.back();
-                                   Get.dialog(const OcurrencyFinish());
+                                    Get.dialog(const OcurrencyFinish());
                                     controller.setPage(0);
-                                  },
+                                  } : null,
                                   child: const Text('Finalizar'),
                                 ),
                               ),
-                          )
+                            )
                     ],
                   ),
                 ),
@@ -140,28 +144,45 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
   void validPageController() {
     switch (controller.page) {
       case 0:
-        //if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
-        controller.setPage(controller.page + 1);
-        //}
+        if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
+          controller.setPage(controller.page + 1);
+        }
         break;
       case 1:
-        //if (controllerOcurrency.formKeyClient.currentState!.validate()) {
-        //if (controllerOcurrency.whithProcurador) {
-        //if (controllerOcurrency.formKeyProcurador.currentState!
-        //  .validate()) {
-        controller.setPage(controller.page + 1);
-        // }
-        //} else {
-        //  controller.setPage(controller.page + 1);
-        //}
-        //}
+        if (controllerOcurrency.formKeyClient.currentState!.validate()) {
+          if (controllerOcurrency.whithProcurador) {
+            if (controllerOcurrency.formKeyProcurador.currentState!
+                .validate()) {
+              controller.setPage(controller.page + 1);
+            }
+          } else {
+            controller.setPage(controller.page + 1);
+          }
+        }
         break;
       case 2:
-        controller.setPage(controller.page + 1);
+        if (controllerOcurrency.formKeyAdress.currentState!.validate() && controllerOcurrency.cepController.text != '') {
+          controller.setPage(controller.page + 1);
+        }else{
+          controllerOcurrency.setNotValidateAdress(true);
+        }
         break;
       case 3:
-        controller.setPage(controller.page + 1);
+        //int i = 0;
+        //for (var fkey in controllerOcurrency.formKeyFornecedor) {
+        //  if (fkey.currentState!.validate()) {
+        //    i++;
+        //  }
+        //}
+        //if (i == 0) {
+          controller.setPage(controller.page + 1);
+        //}
         break;
+      case 4:
+        if (controllerOcurrency.formKeyDescription.currentState!.validate()) {
+          controller.setPage(controller.page + 1);
+        }
+        break;      
     }
   }
 }

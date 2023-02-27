@@ -6,76 +6,101 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 
-class FormDescription extends StatelessWidget {
+class FormDescription extends StatefulWidget {
   const FormDescription({super.key});
 
   @override
+  State<FormDescription> createState() => _FormDescriptionState();
+}
+
+class _FormDescriptionState extends State<FormDescription> {
+  late bool iconClose;
+
+  @override
+  void initState() {
+    super.initState();
+    iconClose = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.find<OcurrencyController>();
     final controllerType = Get.find<TypeOcurrencyController>();
+    final controller = Get.find<OcurrencyController>();
     return Form(
         key: controller.formKeyDescription,
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               const Text(
-                'Dados do Consumidor',
+                'Detalhes da reclamação',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
               const SizedBox(
                 height: 16,
               ),
-              TypeAheadFormField(
-                hideOnEmpty: false,
-                hideOnLoading: true,
-                hideSuggestionsOnKeyboardHide: true,
-                textFieldConfiguration: const TextFieldConfiguration(
-                  autofocus: false,
-                  decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.arrow_downward),
-                      border: OutlineInputBorder(),
-                      hintText: 'Selecione aqui o tipo de reclamação...'),
-                ),
-                suggestionsCallback: (pattern) async {
-                  controllerType.setSuggestion(false);
-                  return await controllerType.getSuggestions(pattern);
-                },
-                itemBuilder: (context, TypeOcurrencyModel suggestion) {
-                  return ListTile(
-                    title: Text(suggestion.name!),
-                    subtitle: Text('${suggestion.description}'),
-                  );
-                },
-                onSuggestionSelected: (TypeOcurrencyModel suggestion) {
-                  controllerType.setSuggestion(true);
-                },
-                onSaved: (value) {},
-                validator: (value) {},
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.camera),
-                      label: const Text("Tirar foto")),
-                  const SizedBox(
-                    width: 32,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: TypeAheadFormField(
+                  hideOnEmpty: false,
+                  hideOnLoading: true,
+                  hideSuggestionsOnKeyboardHide: true,
+                  textFieldConfiguration: TextFieldConfiguration(
+                    controller: controller.typeOcurrencyController,
+                    autofocus: false,
+                    decoration: InputDecoration(
+                        suffixIcon: GestureDetector(
+                            onTap: iconClose == false
+                                ? null
+                                : () {
+                                    controller.setTypeOcurrecyController('');
+                                    setState(() {
+                                      iconClose = false;
+                                    });
+                                  },
+                            child: iconClose == true
+                                ? const Icon(Icons.close)
+                                : const Icon(Icons.arrow_downward)),
+                        isDense: true,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18)),
+                        hintText: 'Selecione aqui o tipo de reclamação...'),
                   ),
-                  ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: const Icon(Icons.attach_file),
-                      label: const Text("Anexar arquivo")),
-                ],
+                  suggestionsCallback: (pattern) async {
+                    controller.setSuggestion(false);
+                    return await controllerType.getSuggestions(pattern);
+                  },
+                  itemBuilder: (context, TypeOcurrencyModel suggestion) {
+                    return ListTile(
+                      title: Text(suggestion.name!),
+                      subtitle: Text('${suggestion.description}'),
+                    );
+                  },
+                  onSuggestionSelected: (TypeOcurrencyModel suggestion) {
+                    // typeOcurrency = suggestion;
+                    controller.setTypeOcurrecyController(suggestion.name!);
+                    setState(() {
+                      iconClose = true;
+                    });
+                    controller.setSuggestion(true);
+                  },
+                  onSaved: (value) =>
+                      controller.setTypeOcurrecyController(value!),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Selecione o tipo de ocorrencia";
+                    } else if (controller.notSuggestion.value == false) {
+                      return "Selecione uma das opções abaixo";
+                    } else {
+                      return null;
+                    }
+                  },
+                ),
               ),
               const SizedBox(
                 height: 16,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
                 child: CustomTextField(
                   maxLines: null,
                   label: 'Descreva o fato ocorrido',

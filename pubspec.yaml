@@ -49,10 +49,13 @@ dependencies:
   syncfusion_flutter_charts: ^20.3.61
   firebase_auth: ^4.2.1
   expandable_page_view: ^1.0.17
-  flutter_typeahead: ^4.1.1
+  flutter_typeahead: ^4.3.6
   http: ^0.13.5
   geolocator: ^9.0.2
   geocoder2: ^1.4.0
+  firebase_storage: ^11.0.14
+  file_picker: ^5.2.5
+  image_picker: ^0.8.6+3
 
 dev_dependencies:
   flutter_test:

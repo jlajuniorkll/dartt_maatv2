@@ -22,11 +22,16 @@ class TypeOcurrencyController extends GetxController {
 
   void setLoading(bool value) {
     isLoading = value;
-    if(isLoading){
+    if (isLoading) {
       LoadingServices.showLoading();
-    }else{
+    } else {
       LoadingServices.hideLoading();
     }
+    update();
+  }
+
+  void setSuggestion(bool value) {
+    notSuggestion = value;
     update();
   }
 
@@ -38,7 +43,7 @@ class TypeOcurrencyController extends GetxController {
   }
 
   Future<void> getAllTypeOcurrency({bool? injection}) async {
-    if(injection == false) setLoading(true);
+    if (injection == false) setLoading(true);
     GenericsResult<TypeOcurrencyModel> typeOcurrencyResult =
         await typeOcurrencyRepository.getAllTypeOcurrency();
     setLoading(false);
@@ -59,53 +64,52 @@ class TypeOcurrencyController extends GetxController {
     });
   }
 
-  Future<void> addTypeOcurrency() async{
+  Future<void> addTypeOcurrency() async {
     setLoading(true);
-      await typeOcurrencyRepository.addTypeOcurrency(typeOcurrency: typeOcurrency);
-      getAllTypeOcurrency();
-      setLoading(false);
+    await typeOcurrencyRepository.addTypeOcurrency(
+        typeOcurrency: typeOcurrency);
+    getAllTypeOcurrency();
+    setLoading(false);
   }
 
-  Future<void> deleteTypeOcurrency(String id) async{
+  Future<void> deleteTypeOcurrency(String id) async {
     setLoading(true);
     await typeOcurrencyRepository.deleteTypeOcurrency(typeOcurrencyId: id);
     getAllTypeOcurrency();
     setLoading(false);
   }
 
-  Future<void> updateTypeOcurrency() async{
+  Future<void> updateTypeOcurrency() async {
     setLoading(true);
-    await typeOcurrencyRepository.updateTypeOcurrency(typeOcurrency: typeOcurrency);
+    await typeOcurrencyRepository.updateTypeOcurrency(
+        typeOcurrency: typeOcurrency);
     getAllTypeOcurrency();
     setLoading(false);
   }
 
-    List<TypeOcurrencyModel> get filteredTypeOcurrency {
+  List<TypeOcurrencyModel> get filteredTypeOcurrency {
     final List<TypeOcurrencyModel> filteredTypeOcurrency = [];
     if (searchTypeOcurrency.isEmpty) {
       filteredTypeOcurrency.addAll(allTypeOcurrency);
     } else {
-      filteredTypeOcurrency.addAll(allTypeOcurrency.where((element) =>
-          element.name!.toLowerCase().contains(searchTypeOcurrency.toLowerCase())));
+      filteredTypeOcurrency.addAll(allTypeOcurrency.where((element) => element
+          .name!
+          .toLowerCase()
+          .contains(searchTypeOcurrency.toLowerCase())));
     }
     return filteredTypeOcurrency;
   }
 
-      void setSuggestion(bool value) {
-    notSuggestion = value;
-    update();
-  }
-
-    Future<List<TypeOcurrencyModel>> getSuggestions(String query) async {
+  Future<List<TypeOcurrencyModel>> getSuggestions(String query) async {
     List<TypeOcurrencyModel> suggestions = [];
     if (query.isEmpty) {
       suggestions.addAll(allTypeOcurrency);
       return suggestions;
-    }else{
-    suggestions.addAll(allTypeOcurrency.where((element) =>
-        element.name!.toLowerCase().contains(query.toLowerCase())));
+    } else {
+      suggestions.addAll(allTypeOcurrency.where((element) =>
+          element.name!.toLowerCase().contains(query.toLowerCase())));
 
-    return suggestions;
+      return suggestions;
     }
   }
 }

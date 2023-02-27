@@ -21,18 +21,27 @@ class FormAdress extends StatelessWidget {
                 'Endereço do cliente',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                alignment: Alignment.center,
-                child: const Text.rich(
-                  TextSpan(
-                    children: [
+              GetBuilder<OcurrencyController>(
+                builder: (controller) {
+                  return Container(
+                    padding: const EdgeInsets.all(8),
+                    alignment: Alignment.center,
+                    child: Text.rich(
                       TextSpan(
-                          text:
-                              'Selecione uma das opções abaixo para preencher o endereço.'),
-                    ],
-                  ),
-                ),
+                        children: [
+                          !controller.notValidateAdress
+                              ? const TextSpan(
+                                  text:
+                                      'Selecione uma das opções abaixo para preencher o endereço.')
+                              : const TextSpan(
+                                  text:
+                                      'Selecione uma das opções abaixo para preencher o endereço.',
+                                  style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
               GetBuilder<OcurrencyController>(builder: (controller) {
                 return Wrap(
@@ -147,10 +156,11 @@ class FormAdress extends StatelessWidget {
                   return controller.cepController.text != ''
                       ? Column(
                           children: [
-                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
                               child: CustomTextField(
-                                controller: controller.numeroController,
+                                  controller: controller.numeroController,
                                   label: 'Número',
                                   textInputType: TextInputType.number,
                                   validator: numeroValidator),
