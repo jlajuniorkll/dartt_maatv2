@@ -1,8 +1,10 @@
 import 'package:dartt_maat_v2/common/custom_textfield.dart';
 import 'package:dartt_maat_v2/models/channel_model.dart';
+import 'package:dartt_maat_v2/models/status_model.dart';
 import 'package:dartt_maat_v2/models/user_model.dart';
 import 'package:dartt_maat_v2/pages/channel/controller/channel_controller.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
+import 'package:dartt_maat_v2/pages/status/controller/status_controller.dart';
 import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,55 +37,89 @@ class HeaderFormInterno extends StatelessWidget {
                 CustomTextField(
                     label: "Data Atual/Registro",
                     iniValue: controller.getDataHoraAtual(),
+                    onSaved: (newDataAt) =>
+                        controller.ocurrency.dataRegistro = newDataAt,
                     isInActive: true),
-                const CustomTextField(
-                    label: "Status",
-                    iniValue: "Não carregado",
-                    isInActive: true),
-                GetBuilder<ChannelController>(
-                  builder: (channelController) {
-                    return Container(
-                      height: 42,
-                      decoration: const ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              width: 1,
-                              style: BorderStyle.solid,
-                              color: Colors.grey),
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(24.0)),
+                GetBuilder<StatusController>(
+                  builder: (statusController) {
+                    return DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<StatusModel>(
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.done),
+                            isDense: true,
+                            labelText: 'Status',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18)),
+                          ),
+                          borderRadius: BorderRadius.circular(18),
+                          value: statusController.statusSelected,
+                          onChanged: (StatusModel? newValue) {
+                            statusController.setStatusSelected(newValue!);
+                          },
+                          onSaved: (newValue) {
+                            controller.ocurrency.status = newValue;
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Escolha uma opção';
+                            }
+                            return null;
+                          },
+                          items: statusController.selectStatus
+                              .map<DropdownMenuItem<StatusModel>>(
+                                  (StatusModel e) {
+                            return DropdownMenuItem<StatusModel>(
+                              value: e,
+                              child: Text(e.name!),
+                            );
+                          }).toList(),
                         ),
                       ),
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<ChannelModel>(
-                            hint: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 22.0),
-                              child:
-                                  Text('Selecione o canal de atendimento...'),
-                            ),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                GetBuilder<ChannelController>(
+                  builder: (channelController) {
+                    return DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<ChannelModel>(
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.call),
                             isDense: true,
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(18),
-                            value: channelController.channnelSelected,
-                            onChanged: (ChannelModel? newValue) {
-                              channelController.setChannelSelected(newValue!);
-                            },
-                            items: channelController.selectChannel
-                                .map<DropdownMenuItem<ChannelModel>>(
-                                    (ChannelModel e) {
-                              return DropdownMenuItem<ChannelModel>(
-                                value: e,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 22.0),
-                                  child: Text(e.name!),
-                                ),
-                              );
-                            }).toList(),
+                            labelText: 'Canal Atendimento',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18)),
                           ),
+                          borderRadius: BorderRadius.circular(18),
+                          value: channelController.channnelSelected,
+                          onChanged: (ChannelModel? newValue) {
+                            channelController.setChannelSelected(newValue!);
+                          },
+                          onSaved: (newValue) {
+                            controller.ocurrency.channel = newValue;
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Escolha uma opção';
+                            }
+                            return null;
+                          },
+                          items: channelController.selectChannel
+                              .map<DropdownMenuItem<ChannelModel>>(
+                                  (ChannelModel e) {
+                            return DropdownMenuItem<ChannelModel>(
+                              value: e,
+                              child: Text(e.name!),
+                            );
+                          }).toList(),
                         ),
                       ),
                     );
@@ -94,46 +130,39 @@ class HeaderFormInterno extends StatelessWidget {
                 ),
                 GetBuilder<UserController>(
                   builder: (userManager) {
-                    return Container(
-                      height: 42,
-                      decoration: const ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              width: 1,
-                              style: BorderStyle.solid,
-                              color: Colors.grey),
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(18.0)),
-                        ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<UserModel>(
-                            hint: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 22.0),
-                              child: Text('Selecione o responsável...'),
-                            ),
+                    return DropdownButtonHideUnderline(
+                      child: ButtonTheme(
+                        alignedDropdown: true,
+                        child: DropdownButtonFormField<UserModel>(
+                          isExpanded: true,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.account_circle),
                             isDense: true,
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(18),
-                            value: userManager.responsavelSelected,
-                            onChanged: (UserModel? newValue) {
-                              userManager.setResponsavelSelected(newValue!);
-                            },
-                            items: userManager.selectResponsavel
-                                .map<DropdownMenuItem<UserModel>>(
-                                    (UserModel e) {
-                              return DropdownMenuItem<UserModel>(
-                                value: e,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 22.0),
-                                  child: Text(e.name!),
-                                ),
-                              );
-                            }).toList(),
+                            labelText: 'Responsável',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18)),
                           ),
+                          borderRadius: BorderRadius.circular(18),
+                          value: userManager.responsavelSelected,
+                          onChanged: (UserModel? newValue) {
+                            userManager.setResponsavelSelected(newValue!);
+                          },
+                          onSaved: (newValue) {
+                            controller.ocurrency.responsavel = newValue;
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Escolha uma opção';
+                            }
+                            return null;
+                          },
+                          items: userManager.selectResponsavel
+                              .map<DropdownMenuItem<UserModel>>((UserModel e) {
+                            return DropdownMenuItem<UserModel>(
+                              value: e,
+                              child: Text(e.name!),
+                            );
+                          }).toList(),
                         ),
                       ),
                     );

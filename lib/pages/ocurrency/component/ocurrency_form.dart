@@ -118,17 +118,25 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                           : Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
-                                height: 32,
-                                width: 120,
-                                child: ElevatedButton(
-                                  onPressed: controllerOcurrency.listAnexos.isNotEmpty ? () {
-                                    Get.back();
-                                    Get.dialog(const OcurrencyFinish());
-                                    controller.setPage(0);
-                                  } : null,
-                                  child: const Text('Finalizar'),
-                                ),
-                              ),
+                                  height: 32,
+                                  width: 120,
+                                  child: GetBuilder<OcurrencyController>(
+                                      builder: (controllerOcurrency) {
+                                    return ElevatedButton(
+                                      onPressed: controllerOcurrency
+                                              .listAnexos.isNotEmpty
+                                          ? () {
+                                              Get.back();
+                                              Get.dialog(
+                                                  const OcurrencyFinish());
+                                              controller.setPage(0);
+                                              controllerOcurrency
+                                                  .finalizarReclamacao();
+                                            }
+                                          : null,
+                                      child: const Text('Finalizar'),
+                                    );
+                                  })),
                             )
                     ],
                   ),
@@ -145,44 +153,38 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
     switch (controller.page) {
       case 0:
         if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
+          controllerOcurrency.formKeyHeader.currentState!.save();
           controller.setPage(controller.page + 1);
         }
         break;
       case 1:
         if (controllerOcurrency.formKeyClient.currentState!.validate()) {
-          if (controllerOcurrency.whithProcurador) {
-            if (controllerOcurrency.formKeyProcurador.currentState!
-                .validate()) {
-              controller.setPage(controller.page + 1);
-            }
-          } else {
-            controller.setPage(controller.page + 1);
-          }
+          controllerOcurrency.formKeyClient.currentState!.save();
+          controller.setPage(controller.page + 1);
         }
         break;
       case 2:
-        if (controllerOcurrency.formKeyAdress.currentState!.validate() && controllerOcurrency.cepController.text != '') {
+        if (controllerOcurrency.formKeyAdress.currentState!.validate() &&
+            controllerOcurrency.cepController.text != '') {
+          controllerOcurrency.formKeyAdress.currentState!.save();
           controller.setPage(controller.page + 1);
-        }else{
+        } else {
           controllerOcurrency.setNotValidateAdress(true);
         }
         break;
       case 3:
-        //int i = 0;
-        //for (var fkey in controllerOcurrency.formKeyFornecedor) {
-        //  if (fkey.currentState!.validate()) {
-        //    i++;
-        //  }
-        //}
-        //if (i == 0) {
+        if (controllerOcurrency.formKeyFornecedor.currentState!.validate()) {
+          controllerOcurrency.formKeyFornecedor.currentState!.save();
           controller.setPage(controller.page + 1);
-        //}
+        }
+
         break;
       case 4:
         if (controllerOcurrency.formKeyDescription.currentState!.validate()) {
+          controllerOcurrency.formKeyDescription.currentState!.save();
           controller.setPage(controller.page + 1);
         }
-        break;      
+        break;
     }
   }
 }

@@ -3,9 +3,11 @@ import 'dart:typed_data';
 import 'package:dartt_maat_v2/config/const.dart';
 import 'package:dartt_maat_v2/models/anexo_model.dart';
 import 'package:dartt_maat_v2/models/cliente_model.dart';
+import 'package:dartt_maat_v2/models/procurador_model.dart';
 import 'package:dartt_maat_v2/models/typeocurrency_model.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/repository/ocurrency_repository.dart';
 import 'package:dartt_maat_v2/pages/typeocurrency/controller/typeocurrency_controller.dart';
+import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoder2/geocoder2.dart';
@@ -25,15 +27,14 @@ class OcurrencyController extends GetxController {
   final GlobalKey<FormState> formKeyAdress = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyProcurador = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyDescription = GlobalKey<FormState>();
-  final List<GlobalKey<FormState>> formKeyFornecedor =
-      List<GlobalKey<FormState>>.generate(
-          10, (index) => GlobalKey(debugLabel: 'key_$index'),
-          growable: false);
+  final GlobalKey<FormState> formKeyFornecedor = GlobalKey<FormState>();
 
   List<FornecedorModel> listFornecedor = [];
   List<AnexoModel> listAnexos = [];
   OcurrencyModel ocurrency = OcurrencyModel();
   ClienteModel cliente = ClienteModel();
+  ProcuradorModel procurador = ProcuradorModel();
+  TypeOcurrencyModel typeOcurrency = TypeOcurrencyModel();
   late FornecedorModel forn;
 
   bool isLoading = false;
@@ -56,7 +57,7 @@ class OcurrencyController extends GetxController {
   String infoUpload = '';
   bool notValidateAdress = false;
 
-  void setNotValidateAdress(bool value){
+  void setNotValidateAdress(bool value) {
     notValidateAdress = value;
     update();
   }
@@ -66,7 +67,7 @@ class OcurrencyController extends GetxController {
     update();
   }
 
-    void delAnexos(AnexoModel value) {
+  void delAnexos(AnexoModel value) {
     listAnexos.remove(value);
     update();
   }
@@ -260,6 +261,7 @@ class OcurrencyController extends GetxController {
     bairroController.text = endereco['bairro'] as String;
     cidadeController.text = endereco['localidade'] as String;
     estadoController.text = endereco['uf'] as String;
+    setAdressClient();
     update();
   }
 
@@ -285,6 +287,7 @@ class OcurrencyController extends GetxController {
     cidadeController.text = data.city;
     estadoController.text = data.state;
     cepController.text = data.postalCode;
+    setAdressClient();
     update();
   }
 
@@ -331,7 +334,7 @@ class OcurrencyController extends GetxController {
 
     if (results != null) {
       for (var result in results.files) {
-                String dateTimeNowOrder = _getDateTimeNowOrder();
+        String dateTimeNowOrder = _getDateTimeNowOrder();
         PlatformFile file = result;
         Uint8List? fileBytes = file.bytes;
         String fileName = '${dateTimeNowOrder}z_z${file.name}';
@@ -388,7 +391,7 @@ class OcurrencyController extends GetxController {
     final ImagePicker picker = ImagePicker();
     final XFile? photo =
         await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
-        String dateTimeNowOrder = _getDateTimeNowOrder();
+    String dateTimeNowOrder = _getDateTimeNowOrder();
     String fileName = '${dateTimeNowOrder}z_z${photo!.name}';
 
     if (fileName != '') {
@@ -439,27 +442,28 @@ class OcurrencyController extends GetxController {
       });
     }
   }
+
   Future<void> removeFileFirebase(AnexoModel anexo) async {
-    setLoading(true);    
+    setLoading(true);
     final res = await ocurrencyRepository.removeFileFirebase(anexo.name!);
     setLoading(false);
-    if(res){
+    if (res) {
       delAnexos(anexo);
-    }else{
+    } else {
       Get.snackbar(
-          "Tente novamente",
-          "Erro ao excluir o arquivo!",
-          backgroundColor: Colors.grey,
-          snackPosition: SnackPosition.BOTTOM,
-          borderColor: Colors.indigo,
-          borderRadius: 0,
-          borderWidth: 2,
-          barBlur: 0,
-        );
+        "Tente novamente",
+        "Erro ao excluir o arquivo!",
+        backgroundColor: Colors.grey,
+        snackPosition: SnackPosition.BOTTOM,
+        borderColor: Colors.indigo,
+        borderRadius: 0,
+        borderWidth: 2,
+        barBlur: 0,
+      );
     }
   }
 
-  String _getDateTimeNowOrder(){
+  String _getDateTimeNowOrder() {
     final dateNow = DateTime.now();
     int year = dateNow.year;
     int month = dateNow.month;
@@ -470,24 +474,37 @@ class OcurrencyController extends GetxController {
     return '$year$month$day$hour$minute$second';
   }
 
-  void finalizarReclamacao(){
+  void setAdressClient() {
+    cliente.cep = cepController.text;
+    cliente.logradouro = logradouroController.text;
+    cliente.numero = numeroController.text;
+    cliente.bairro = bairroController.text;
+    cliente.cidade = cidadeController.text;
+    cliente.estado = estadoController.text;
+    update();
+  }
 
-    // ocurrency.id; // ver
-    ocurrency.dataRegistro = getDataHoraAtual();
-    // ocurrency.dataAt;
-    // ocurrency.protocolo;
+  void finalizarReclamacao() {
+    cliente.procurador = ProcuradorModel(
+        id: procurador.id,
+        nome: procurador.nome,
+        cpf: procurador.cpf,
+        nascimento: procurador.nascimento);
+    final userController = Get.find<UserController>();
+    ocurrency.user = userController.usuarioLogado;
+
     ocurrency.dataOcorrencia = dataOcorrenciaController.text;
-    // ocurrency.ocorrencia;
-    // ocurrency.previsao; // ver
-    // ocurrency.responsavel;
-    // ocurrency.channel;
-    // ocurrency.user;
-    // ocurrency.status;
+    ocurrency.ocorrencia = ocurrency.ocorrencia;
+
     ocurrency.cliente = cliente;
     ocurrency.fornecedores = listFornecedor;
     ocurrency.anexos = listAnexos;
-    // ocurrency.comentarios;
-    // ocurrency.typeOcurrencyId;
 
+    ocurrency.typeOcurrencyId = typeOcurrency;
+    // ocurrency.id; // ver
+    // ocurrency.dataAt;
+    // ocurrency.protocolo;
+    // ocurrency.previsao; // ver
+    // ocurrency.comentarios;
   }
 }

@@ -76,7 +76,7 @@ class _FormDescriptionState extends State<FormDescription> {
                     );
                   },
                   onSuggestionSelected: (TypeOcurrencyModel suggestion) {
-                    // typeOcurrency = suggestion;
+                    controller.typeOcurrency = suggestion;
                     controller.setTypeOcurrecyController(suggestion.name!);
                     setState(() {
                       iconClose = true;
@@ -104,6 +104,9 @@ class _FormDescriptionState extends State<FormDescription> {
                 child: CustomTextField(
                   maxLines: null,
                   label: 'Descreva o fato ocorrido',
+                  iniValue: controller.ocurrency.ocorrencia,
+                  onSaved: (newValue) =>
+                      controller.ocurrency.ocorrencia = newValue!,
                   validator: (ocorrencia) {
                     if (ocorrencia!.isEmpty) {
                       return 'O descrição do fato é obrigatório';

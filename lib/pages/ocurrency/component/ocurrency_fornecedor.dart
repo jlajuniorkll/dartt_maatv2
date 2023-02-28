@@ -60,14 +60,14 @@ class FormFornecedor extends StatelessWidget {
                           var cnpjEncontrado =
                               await controller.fecthCnpj(cnpj: cnpjUnmasked);
                           if (cnpjEncontrado['erro'] == true) {
-                            Get.snackbar(
-                                'Erro!', "Erro ao localizar o CNPJ informado, digite manualmente os dados!",
+                            Get.snackbar('Erro!',
+                                "Erro ao localizar o CNPJ informado, digite manualmente os dados!",
                                 snackPosition: SnackPosition.BOTTOM,
                                 colorText: Colors.white,
                                 backgroundGradient: linearBlue,
                                 duration: const Duration(seconds: 5),
                                 margin: const EdgeInsets.only(bottom: 8));
-                                controller.setDataCNPJ();
+                            controller.setDataCNPJ();
                           } else {
                             controller.setDataCNPJ(cnpj: cnpjEncontrado);
                           }
@@ -81,14 +81,17 @@ class FormFornecedor extends StatelessWidget {
             }),
             const Divider(),
             GetBuilder<OcurrencyController>(builder: (controller) {
-              return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: controller.listFornecedor.length,
-                  itemBuilder: (_, index) {
-                    return NovoFornecedorForm(
-                        fornecedor: controller.listFornecedor[index],
-                        index: index);
-                  });
+              return Form(
+                key: controller.formKeyFornecedor,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: controller.listFornecedor.length,
+                    itemBuilder: (_, index) {
+                      return NovoFornecedorForm(
+                          fornecedor: controller.listFornecedor[index],
+                          index: index);
+                    }),
+              );
             }),
           ],
         ));
@@ -118,69 +121,66 @@ class NovoFornecedorForm extends StatelessWidget {
         TextEditingController(text: '${fornecedor.email}');
     TextEditingController situacaoController =
         TextEditingController(text: '${fornecedor.situacao}');
-    return Form(
-      key: Get.find<OcurrencyController>().formKeyFornecedor[index],
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text('Fornecedor ${index + 1}',
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-          ),
-          CustomTextField(
-            label: 'CNPJ',
-            controller: cnpjController,
-            textInputType: TextInputType.number,
-            inputFormatters: [utilsServices.cnpjFormatter],
-            validator: cnpjValidator,
-          ),
-          CustomTextField(
-            label: 'Fantasia',
-            controller: fantasiaController,
-            validator: fantasiaValidator,
-          ),
-          CustomTextField(
-            label: 'Razão Social',
-            controller: fornecedorController,
-            validator: fornecedorValidator,
-          ),
-          CustomTextField(
-            label: 'Telefone',
-            controller: telefoneController,
-            textInputType: TextInputType.number,
-            inputFormatters: [utilsServices.foneFormatter],
-            validator: phoneValidator,
-          ),
-          CustomTextField(
-            label: 'Email',
-            controller: emailController,
-            textInputType: TextInputType.emailAddress,
-            validator: emailValidator,
-          ),
-          CustomTextField(
-            label: 'Situação',
-            controller: situacaoController,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-                onPressed: () {
-                  Get.find<OcurrencyController>()
-                      .setremoveListFornecedor(fornecedor);
-                },
-                icon: const Icon(
-                  Icons.delete_forever,
-                  color: Colors.red,
-                ),
-                label: const Text(
-                  'Excluir',
-                  style: TextStyle(color: Colors.red),
-                )),
-          ),
-          const Divider(),
-        ],
-      ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Text('Fornecedor ${index + 1}',
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        ),
+        CustomTextField(
+          label: 'CNPJ',
+          controller: cnpjController,
+          textInputType: TextInputType.number,
+          inputFormatters: [utilsServices.cnpjFormatter],
+          validator: cnpjValidator,
+        ),
+        CustomTextField(
+          label: 'Fantasia',
+          controller: fantasiaController,
+          validator: fantasiaValidator,
+        ),
+        CustomTextField(
+          label: 'Razão Social',
+          controller: fornecedorController,
+          validator: fornecedorValidator,
+        ),
+        CustomTextField(
+          label: 'Telefone',
+          controller: telefoneController,
+          textInputType: TextInputType.number,
+          inputFormatters: [utilsServices.foneFormatter],
+          validator: phoneValidator,
+        ),
+        CustomTextField(
+          label: 'Email',
+          controller: emailController,
+          textInputType: TextInputType.emailAddress,
+          validator: emailValidator,
+        ),
+        CustomTextField(
+          label: 'Situação',
+          controller: situacaoController,
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+              onPressed: () {
+                Get.find<OcurrencyController>()
+                    .setremoveListFornecedor(fornecedor);
+              },
+              icon: const Icon(
+                Icons.delete_forever,
+                color: Colors.red,
+              ),
+              label: const Text(
+                'Excluir',
+                style: TextStyle(color: Colors.red),
+              )),
+        ),
+        const Divider(),
+      ],
     );
   }
 }

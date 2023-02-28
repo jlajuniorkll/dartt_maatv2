@@ -19,6 +19,12 @@ class StatusController extends GetxController {
   List<StatusModel> allStatus = [];
   StatusModel status = StatusModel();
   bool reorder = false;
+  StatusModel? statusSelected;
+
+  void setStatusSelected(StatusModel statusSelec) {
+    statusSelected = statusSelec;
+    update();
+  }
 
   void setReoder(bool value) {
     reorder = value;
@@ -130,8 +136,14 @@ class StatusController extends GetxController {
 
   void setIsActive(StatusModel value) {
     status = value;
-      status.isActive = !value.isActive;
+    status.isActive = !value.isActive;
     updateStatus();
     update();
+  }
+
+  List<StatusModel> get selectStatus {
+    final List<StatusModel> selectionStatus = [];
+    selectionStatus.addAll(allStatus.map((e) => e).toList());
+    return selectionStatus;
   }
 }
