@@ -25,6 +25,19 @@ class HeaderFormInterno extends StatelessWidget {
             'Reclamação',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
           ),
+                      Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                        text:
+                            'Preencha os dados iniciais para fazer a sua reclamação.'),
+                  ],
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(

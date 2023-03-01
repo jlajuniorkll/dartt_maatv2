@@ -1,26 +1,31 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:geocoder2/geocoder2.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
 import 'package:dartt_maat_v2/config/const.dart';
 import 'package:dartt_maat_v2/models/anexo_model.dart';
 import 'package:dartt_maat_v2/models/cliente_model.dart';
+import 'package:dartt_maat_v2/models/comentario_model.dart';
+import 'package:dartt_maat_v2/models/fornecedor_model.dart';
+import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/models/procurador_model.dart';
 import 'package:dartt_maat_v2/models/typeocurrency_model.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/repository/ocurrency_repository.dart';
 import 'package:dartt_maat_v2/pages/typeocurrency/controller/typeocurrency_controller.dart';
 import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:geocoder2/geocoder2.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:dartt_maat_v2/models/fornecedor_model.dart';
-import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/services/loading_services.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class OcurrencyController extends GetxController {
+
   final ocurrencyRepository = OcurrencyRepository();
   final GlobalKey<FormState> formKeyHeader = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyClient = GlobalKey<FormState>();
@@ -494,17 +499,26 @@ class OcurrencyController extends GetxController {
     ocurrency.user = userController.usuarioLogado;
 
     ocurrency.dataOcorrencia = dataOcorrenciaController.text;
-    ocurrency.ocorrencia = ocurrency.ocorrencia;
+    // ocurrency.ocorrencia = ocurrency.ocorrencia;
 
     ocurrency.cliente = cliente;
     ocurrency.fornecedores = listFornecedor;
     ocurrency.anexos = listAnexos;
 
     ocurrency.typeOcurrencyId = typeOcurrency;
+
     // ocurrency.id; // ver
     // ocurrency.dataAt;
     // ocurrency.protocolo;
     // ocurrency.previsao; // ver
-    // ocurrency.comentarios;
+    ocurrency.comentarios!.add(ComentarioModel(
+        description: "Reclamação aberta",
+        dataComentario: ocurrency.dataRegistro,
+        usuario: ocurrency.user));
+
+    
+  }
+  void limpaOcurrency(){
+    limpaEnderecoCEP();
   }
 }

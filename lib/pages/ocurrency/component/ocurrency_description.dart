@@ -35,6 +35,19 @@ class _FormDescriptionState extends State<FormDescription> {
                 'Detalhes da reclamação',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
+                                    Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                        text:
+                            'Escolha abaixo ou pesquise o tipo de reclamação, e após preencha o fato ocorrido.'),
+                  ],
+                ),
+              ),
+            ),
               const SizedBox(
                 height: 16,
               ),

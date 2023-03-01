@@ -23,6 +23,19 @@ class FormClient extends StatelessWidget {
               'Dados do Consumidor',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
             ),
+                                  Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                        text:
+                            'Preencha os dados do cliente reclamante.'),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(
               height: 16,
             ),
@@ -169,6 +182,7 @@ class FormProcurador extends StatelessWidget {
           'Dados do Procurador',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
+        
         const SizedBox(
           height: 16,
         ),

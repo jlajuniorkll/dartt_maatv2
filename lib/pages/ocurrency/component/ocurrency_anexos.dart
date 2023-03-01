@@ -16,6 +16,19 @@ class FormAnexos extends StatelessWidget {
                 'Adicionar Anexos',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
+                                    Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                        text:
+                            'Adicione os documentos referentes a reclamação, e não esqueça de anexar a nota fiscal!'),
+                  ],
+                ),
+              ),
+            ),
               const SizedBox(
                 height: 16,
               ),
