@@ -56,15 +56,16 @@ Map<String, dynamic> _$OcurrencyModelToJson(OcurrencyModel instance) =>
       'dataOcorrencia': instance.dataOcorrencia,
       'ocorrencia': instance.ocorrencia,
       'previsao': instance.previsao,
-      'responsavel': instance.responsavel,
-      'channel': instance.channel,
-      'user': instance.user,
-      'status': instance.status,
-      'cliente': instance.cliente,
-      'fornecedores': instance.fornecedores,
-      'anexos': instance.anexos,
+      'responsavel': instance.responsavel!.toJson(),
+      'channel': instance.channel!.toJson(),
+      'user': instance.user!.toJson(),
+      'status': instance.status!.toJson(),
+      'cliente': instance.cliente!.toJson(),
+      'fornecedores':
+          instance.fornecedores!.map((item) => item.toJson()).toList(),
+      'anexos': instance.anexos!.map((item) => item.toJson()).toList(),
       'comentarios': instance.comentarios,
-      'typeOcurrencyId': instance.typeOcurrencyId,
+      'typeOcurrencyId': instance.typeOcurrencyId!.toJson(),
     };
 
 Previsao _$PrevisaoFromJson(Map<String, dynamic> json) => Previsao(

@@ -25,7 +25,6 @@ import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
 import 'package:dartt_maat_v2/services/loading_services.dart';
 
 class OcurrencyController extends GetxController {
-
   final ocurrencyRepository = OcurrencyRepository();
   final GlobalKey<FormState> formKeyHeader = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyClient = GlobalKey<FormState>();
@@ -489,12 +488,13 @@ class OcurrencyController extends GetxController {
     update();
   }
 
-  void finalizarReclamacao() {
+  void finalizarReclamacao() async {
     cliente.procurador = ProcuradorModel(
         id: procurador.id,
         nome: procurador.nome,
         cpf: procurador.cpf,
         nascimento: procurador.nascimento);
+
     final userController = Get.find<UserController>();
     ocurrency.user = userController.usuarioLogado;
 
@@ -509,16 +509,17 @@ class OcurrencyController extends GetxController {
 
     // ocurrency.id; // ver
     // ocurrency.dataAt;
-    // ocurrency.protocolo;
     // ocurrency.previsao; // ver
-    ocurrency.comentarios!.add(ComentarioModel(
+    ComentarioModel comentarios = ComentarioModel(
         description: "Reclamação aberta",
         dataComentario: ocurrency.dataRegistro,
-        usuario: ocurrency.user));
-
-    
+        usuario: ocurrency.user);
+    ocurrency.comentarios?.add(comentarios);
+    ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
+    await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
   }
-  void limpaOcurrency(){
+
+  void limpaOcurrency() {
     limpaEnderecoCEP();
   }
 }

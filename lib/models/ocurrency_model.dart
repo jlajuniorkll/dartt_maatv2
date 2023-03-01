@@ -68,7 +68,7 @@ class Previsao {
 
   Previsao({required this.id, required this.name});
 
-    factory Previsao.fromJson(Map<String, dynamic> json) =>
+  factory Previsao.fromJson(Map<String, dynamic> json) =>
       _$PrevisaoFromJson(json);
 
   Map<String, dynamic> toJson() => _$PrevisaoToJson(this);
