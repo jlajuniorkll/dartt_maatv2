@@ -37,24 +37,24 @@ class DashBoardScreen extends StatelessWidget {
         body: !isMobile
             ? ListView(
                 shrinkWrap: true,
-                children: [
-                  const TotalDashBoard(),
-                  const TrendDashboard(),
+                children: const [
+                   TotalDashBoard(),
+                   TrendDashboard(),
                   Row(
                     mainAxisSize: MainAxisSize.max,
-                    children: const [
+                    children:  [
                       Expanded(child: PrevisaoDashboard()),
                       Expanded(child: TempoDashboard()),
                     ],
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
-                    children: const [
+                    children:  [
                       Expanded(child: ChannelDashBoard()),
                       Expanded(child: StatusDashBoard()),
                     ],
                   ),
-                  const TableUserDashBoard(),
+                   TableUserDashBoard(),
                 ],
               )
             : ListView(

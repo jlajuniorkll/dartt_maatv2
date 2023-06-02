@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dartt_maat_v2/results/generics_result.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class OcurrencyController extends GetxController {
   final GlobalKey<FormState> formKeyProcurador = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyDescription = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyFornecedor = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKeyDetails = GlobalKey<FormState>();
 
   List<FornecedorModel> listFornecedor = [];
   List<AnexoModel> listAnexos = [];
@@ -60,6 +62,14 @@ class OcurrencyController extends GetxController {
   double progress = 0.0;
   String infoUpload = '';
   bool notValidateAdress = false;
+
+  List<OcurrencyModel> allOcurrency = [];
+
+  @override
+  void onInit() {
+    super.onInit();
+    getAllOcurrency();
+  }
 
   void setNotValidateAdress(bool value) {
     notValidateAdress = value;
@@ -519,7 +529,58 @@ class OcurrencyController extends GetxController {
     await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
   }
 
+  void setOcurrency(OcurrencyModel ocurrencyUpdate) async {
+    cliente.procurador = ProcuradorModel(
+        id: ocurrencyUpdate.cliente!.procurador!.id,
+        nome: ocurrencyUpdate.cliente!.procurador!.nome,
+        cpf: ocurrencyUpdate.cliente!.procurador!.cpf,
+        nascimento: ocurrencyUpdate.cliente!.procurador!.nascimento);
+    ocurrency.user = ocurrencyUpdate.user;
+    ocurrency.dataOcorrencia = ocurrencyUpdate.dataOcorrencia;
+    // ocurrency.ocorrencia = ocurrency.ocorrencia;
+
+    ocurrency.cliente = ocurrencyUpdate.cliente;
+    ocurrency.fornecedores = ocurrencyUpdate.fornecedores;
+    ocurrency.anexos = ocurrencyUpdate.anexos;
+
+    ocurrency.typeOcurrencyId = ocurrencyUpdate.typeOcurrencyId;
+
+    // ocurrency.id; // ver
+    // ocurrency.dataAt;
+    // ocurrency.previsao; // ver
+    /*ComentarioModel comentarios = ComentarioModel(
+        description: "Reclamação aberta",
+        dataComentario: ocurrency.dataRegistro,
+        usuario: ocurrency.user);
+    ocurrency.comentarios?.add(comentarios);*/
+    //ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
+    //await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
+    update();
+  }
+
   void limpaOcurrency() {
     limpaEnderecoCEP();
+  }
+
+  Future<void> getAllOcurrency({bool? injection}) async {
+    if (injection == false) setLoading(true);
+    GenericsResult<OcurrencyModel> ocurrencyResult =
+        await ocurrencyRepository.getAllOcurrency();
+    setLoading(false);
+
+    ocurrencyResult.when(success: (data) {
+      allOcurrency.assignAll(data);
+    }, error: (message) {
+      Get.snackbar(
+        "Tente novamente",
+        "Erro ao buscar lista de canais",
+        backgroundColor: Colors.grey,
+        snackPosition: SnackPosition.BOTTOM,
+        borderColor: Colors.indigo,
+        borderRadius: 0,
+        borderWidth: 2,
+        barBlur: 0,
+      );
+    });
   }
 }

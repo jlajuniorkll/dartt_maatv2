@@ -1,6 +1,8 @@
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_adress.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_anexos.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_description.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_detail.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_error.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_finish.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_fornecedor.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
@@ -22,7 +24,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
     with SingleTickerProviderStateMixin {
   final controller = Get.find<PageManager>();
   final controllerOcurrency = Get.find<OcurrencyController>();
-  final int qtdPages = 6;
+  final int qtdPages = 7;
 
   @override
   void initState() {
@@ -66,6 +68,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                     FormAdress(),
                     const FormFornecedor(),
                     const FormDescription(),
+                    const FormDetails(),
                     const FormAnexos(),
                   ],
                 ),
@@ -152,38 +155,46 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
   void validPageController() {
     switch (controller.page) {
       case 0:
-        if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
-          controllerOcurrency.formKeyHeader.currentState!.save();
-          controller.setPage(controller.page + 1);
-        }
+        //if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
+        //  controllerOcurrency.formKeyHeader.currentState!.save();
+        controller.setPage(controller.page + 1);
+        //}
         break;
       case 1:
-        if (controllerOcurrency.formKeyClient.currentState!.validate()) {
-          controllerOcurrency.formKeyClient.currentState!.save();
-          controller.setPage(controller.page + 1);
-        }
+        //if (controllerOcurrency.formKeyClient.currentState!.validate()) {
+        //  controllerOcurrency.formKeyClient.currentState!.save();
+        controller.setPage(controller.page + 1);
+        //}
         break;
       case 2:
-        if (controllerOcurrency.formKeyAdress.currentState!.validate() &&
-            controllerOcurrency.cepController.text != '') {
-          controllerOcurrency.formKeyAdress.currentState!.save();
-          controller.setPage(controller.page + 1);
-        } else {
-          controllerOcurrency.setNotValidateAdress(true);
-        }
+        //if (controllerOcurrency.formKeyAdress.currentState!.validate() &&
+        //    controllerOcurrency.cepController.text != '') {
+        //  controllerOcurrency.formKeyAdress.currentState!.save();
+        controller.setPage(controller.page + 1);
+        //} else {
+        //  controllerOcurrency.setNotValidateAdress(true);
+        //}
         break;
       case 3:
-        if (controllerOcurrency.formKeyFornecedor.currentState!.validate()) {
-          controllerOcurrency.formKeyFornecedor.currentState!.save();
-          controller.setPage(controller.page + 1);
-        }
+        //if (controllerOcurrency.formKeyFornecedor.currentState!.validate()) {
+        //  controllerOcurrency.formKeyFornecedor.currentState!.save();
+        controller.setPage(controller.page + 1);
+        //}
 
         break;
       case 4:
-        if (controllerOcurrency.formKeyDescription.currentState!.validate()) {
-          controllerOcurrency.formKeyDescription.currentState!.save();
-          controller.setPage(controller.page + 1);
-        }
+        //if (controllerOcurrency.ocurrency.typeOcurrencyId!.id != null) {
+        //  controllerOcurrency.formKeyDescription.currentState!.save();
+        controller.setPage(controller.page + 1);
+        //} else {
+        //  Get.dialog(const OcurrencyError());
+        //}
+        break;
+      case 5:
+        //if (controllerOcurrency.formKeyDetails.currentState!.validate()) {
+        //  controllerOcurrency.formKeyDetails.currentState!.save();
+        controller.setPage(controller.page + 1);
+        //}
         break;
     }
   }

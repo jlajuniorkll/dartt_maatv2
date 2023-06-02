@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
+import 'package:dartt_maat_v2/results/generics_result.dart';
 import 'package:dartt_maat_v2/results/uploadfiles_result.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -59,6 +60,23 @@ class OcurrencyRepository {
     } catch (e) {
       // ignore: avoid_print
       print(e.toString());
+    }
+  }
+
+  // buscar todas os canais
+  Future<GenericsResult<OcurrencyModel>> getAllOcurrency() async {
+    try {
+      final QuerySnapshot snapOcurrency = await fireRef.orderBy('protocolo').get();
+
+      if (snapOcurrency.docs.isNotEmpty) {
+        List<OcurrencyModel> data =
+            snapOcurrency.docs.map((d) => OcurrencyModel.fromDocument(d)).toList();
+        return GenericsResult<OcurrencyModel>.success(data);
+      } else {
+        return GenericsResult.error('Não existem ocorrências cadastradas!');
+      }
+    } catch (e) {
+      return GenericsResult.error('Erro ao consultar base de dados. -OCORRENCIA-');
     }
   }
 }

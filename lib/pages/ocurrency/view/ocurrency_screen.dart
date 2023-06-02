@@ -1,6 +1,8 @@
 import 'package:dartt_maat_v2/common/drawer/custom_drawer.dart';
 import 'package:dartt_maat_v2/models/status_model.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_form.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_listile.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
 import 'package:dartt_maat_v2/pages/status/controller/status_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,7 +40,7 @@ class _OcurrencyScreenState extends State<OcurrencyScreen>
       drawer: const CustomDrawer(),
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Canais de atendimento'),
+        title: const Text('Ocorrências'),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -60,12 +62,27 @@ class _OcurrencyScreenState extends State<OcurrencyScreen>
         ),
       ),
       body: TabBarView(
-              controller: _tabController,
-              children: _tabs.map((Tab tab) {
-                final String label = tab.text!.toUpperCase().trim();
-                return Text(label);
-              }).toList(),
-            ),
+        controller: _tabController,
+        children: _tabs.map((Tab tab) {
+          // final String label = tab.text!.toUpperCase().trim();
+          return GetBuilder<OcurrencyController>(
+            builder: (controller) {
+              final filteredOcurrency = controller.allOcurrency;
+              return ListView.builder(
+                  padding: const EdgeInsets.all(16.0),
+                  itemCount: filteredOcurrency.length,
+                  itemBuilder: (_, index) {
+                    return GestureDetector(
+                        child: GestureDetector(
+                      child: OcurrencyListTile(
+                        ocurrencyReceived: filteredOcurrency[index],
+                      ),
+                    ));
+                  });
+            },
+          );
+        }).toList(),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Get.dialog(const OcurrencyFormScreen());

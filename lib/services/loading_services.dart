@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 abstract class LoadingServices {
 
   static void showLoading() {
-    Get.dialog(Dialog(
+    Get.dialog(const Dialog(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding:  EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const[
+          children: [
             CircularProgressIndicator(),
             SizedBox(height: 8),
             Text('Carregando...')

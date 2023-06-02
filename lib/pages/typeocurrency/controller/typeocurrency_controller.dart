@@ -12,13 +12,18 @@ class TypeOcurrencyController extends GetxController {
   void onInit() {
     super.onInit();
     getAllTypeOcurrency();
+    debounce(searchTitle, (_) => filterByTitle(),
+        time: const Duration(milliseconds: 600));
   }
 
   String _searchTypeOcurrency = '';
   bool isLoading = false;
   List<TypeOcurrencyModel> allTypeOcurrency = [];
+  List<TypeOcurrencyModel> allTypeOcurrencyFiltered = [];
   TypeOcurrencyModel typeOcurrency = TypeOcurrencyModel();
   bool notSuggestion = true;
+  String isTypeSelected = '';
+  RxString searchTitle = ''.obs;
 
   void setLoading(bool value) {
     isLoading = value;
@@ -27,6 +32,11 @@ class TypeOcurrencyController extends GetxController {
     } else {
       LoadingServices.hideLoading();
     }
+    update();
+  }
+
+  void setTypeSelected(String value) {
+    isTypeSelected = value;
     update();
   }
 
@@ -50,6 +60,7 @@ class TypeOcurrencyController extends GetxController {
 
     typeOcurrencyResult.when(success: (data) {
       allTypeOcurrency.assignAll(data);
+      allTypeOcurrencyFiltered.addAll(allTypeOcurrency);
     }, error: (message) {
       Get.snackbar(
         "Tente novamente",
@@ -111,5 +122,17 @@ class TypeOcurrencyController extends GetxController {
 
       return suggestions;
     }
+  }
+
+  void filterByTitle() {
+    // setTypeSelected(-1);
+    allTypeOcurrencyFiltered.clear();
+    if (searchTitle.value.isNotEmpty) {
+      allTypeOcurrencyFiltered.addAll(allTypeOcurrency.where((e) =>
+          e.name!.toUpperCase().contains(searchTitle.value.toUpperCase())));
+    } else {
+      allTypeOcurrencyFiltered.addAll(allTypeOcurrency);
+    }
+    update();
   }
 }
