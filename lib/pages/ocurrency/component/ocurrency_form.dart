@@ -8,6 +8,7 @@ import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.da
 import 'package:dartt_maat_v2/pages/ocurrency/controller/pagecontroller.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_client.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_header_interno.dart';
+import 'package:dartt_maat_v2/pages/typeocurrency/controller/typeocurrency_controller.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -134,6 +135,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                                               controller.setPage(0);
                                               controllerOcurrency
                                                   .finalizarReclamacao();
+                                              controllerOcurrency.update();
                                             }
                                           : null,
                                       child: const Text('Finalizar'),
@@ -154,46 +156,56 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
   void validPageController() {
     switch (controller.page) {
       case 0:
-        //if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
-        //  controllerOcurrency.formKeyHeader.currentState!.save();
-        controller.setPage(controller.page + 1);
-        //}
+        if (controllerOcurrency.formKeyHeader.currentState!.validate()) {
+          controllerOcurrency.formKeyHeader.currentState!.save();
+          controller.setPage(controller.page + 1);
+        }
         break;
       case 1:
-        //if (controllerOcurrency.formKeyClient.currentState!.validate()) {
-        //  controllerOcurrency.formKeyClient.currentState!.save();
-        controller.setPage(controller.page + 1);
-        //}
+        if (controllerOcurrency.formKeyClient.currentState!.validate()) {
+          controllerOcurrency.formKeyClient.currentState!.save();
+          controller.setPage(controller.page + 1);
+        }
         break;
       case 2:
-        //if (controllerOcurrency.formKeyAdress.currentState!.validate() &&
-        //    controllerOcurrency.cepController.text != '') {
-        //  controllerOcurrency.formKeyAdress.currentState!.save();
-        controller.setPage(controller.page + 1);
-        //} else {
-        //  controllerOcurrency.setNotValidateAdress(true);
-        //}
+        if (controllerOcurrency.formKeyAdress.currentState!.validate() &&
+            controllerOcurrency.cepController.text != '') {
+          controllerOcurrency.formKeyAdress.currentState!.save();
+          controller.setPage(controller.page + 1);
+        } else {
+          controllerOcurrency.setNotValidateAdress(true);
+        }
         break;
       case 3:
-        //if (controllerOcurrency.formKeyFornecedor.currentState!.validate()) {
-        //  controllerOcurrency.formKeyFornecedor.currentState!.save();
-        controller.setPage(controller.page + 1);
-        //}
+        if (controllerOcurrency.formKeyFornecedor.currentState!.validate()) {
+          controllerOcurrency.formKeyFornecedor.currentState!.save();
+          controller.setPage(controller.page + 1);
+        }
 
         break;
       case 4:
-        //if (controllerOcurrency.ocurrency.typeOcurrencyId!.id != null) {
-        //  controllerOcurrency.formKeyDescription.currentState!.save();
-        controller.setPage(controller.page + 1);
-        //} else {
-        //  Get.dialog(const OcurrencyError());
-        //}
+        if (Get.find<TypeOcurrencyController>().isTypeSelected != '') {
+          controllerOcurrency.formKeyDescription.currentState!.save();
+          controller.setPage(controller.page + 1);
+        } else {
+          Get.snackbar(
+            "Atenção",
+            "É obrigatório selecionar um tipo de reclamação.",
+            colorText: Colors.white,
+            backgroundColor: Colors.red,
+            snackPosition: SnackPosition.BOTTOM,
+            borderColor: Colors.red,
+            borderRadius: 0,
+            borderWidth: 2,
+            barBlur: 0,
+          );
+        }
         break;
       case 5:
-        //if (controllerOcurrency.formKeyDetails.currentState!.validate()) {
-        //  controllerOcurrency.formKeyDetails.currentState!.save();
-        controller.setPage(controller.page + 1);
-        //}
+        if (controllerOcurrency.formKeyDetails.currentState!.validate()) {
+          controllerOcurrency.formKeyDetails.currentState!.save();
+          controller.setPage(controller.page + 1);
+        }
         break;
     }
   }

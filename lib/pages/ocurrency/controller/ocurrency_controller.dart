@@ -527,6 +527,8 @@ class OcurrencyController extends GetxController {
     ocurrency.comentarios?.add(comentarios);
     ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
     await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
+    getAllOcurrency();
+    update();
   }
 
   void setOcurrency(OcurrencyModel ocurrencyUpdate) async {
