@@ -76,14 +76,15 @@ class OcurrencyListTile extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => showDialog(
-                        context: context,
-                        builder: (_) {
-                          // OcurrencyFormScreen(ocurrency: widget.ocurrency)),
-                          final controller = Get.find<OcurrencyController>();
-                          controller.setOcurrency(ocurrencyReceived);
-                          return const OcurrencyFormScreen();
-                        }),
+                    onTap: () {
+                      Get.find<OcurrencyController>()
+                          .setOcurrency(ocurrencyReceived);
+                      /*showDialog(
+                          context: context,
+                          builder: (_) {
+                            return const OcurrencyFormScreen();
+                          });*/
+                    },
                     child: Container(
                       padding: const EdgeInsets.only(left: 4, right: 6),
                       child: Icon(Icons.edit,

@@ -20,9 +20,11 @@ ClienteModel _$ClienteModelFromJson(Map<String, dynamic> json) => ClienteModel(
       bairro: json['bairro'] as String?,
       cidade: json['cidade'] as String?,
       estado: json['estado'] as String?,
-    )..procurador = json['procurador'] == null
-        ? null
-        : ProcuradorModel.fromJson(json['procurador'] as Map<String, dynamic>);
+      procurador: json['procurador'] == null
+          ? null
+          : ProcuradorModel.fromJson(
+              json['procurador'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$ClienteModelToJson(ClienteModel instance) =>
     <String, dynamic>{
@@ -39,5 +41,5 @@ Map<String, dynamic> _$ClienteModelToJson(ClienteModel instance) =>
       'bairro': instance.bairro,
       'cidade': instance.cidade,
       'estado': instance.estado,
-      'procurador': instance.procurador!.toJson(),
+      'procurador': instance.procurador,
     };

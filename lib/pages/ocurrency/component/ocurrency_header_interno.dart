@@ -192,6 +192,11 @@ class HeaderFormInterno extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: InkWell(
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  borderRadius: BorderRadius.circular(18),
                   onTap: () {
                     showDatePicker(
                             context: context,

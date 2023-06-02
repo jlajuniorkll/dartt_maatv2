@@ -59,6 +59,44 @@ class OcurrencyModel {
     data.putIfAbsent('id', () => doc.id);
     return OcurrencyModel.fromJson(data);
   }
+
+  Map<String, dynamic> getMapOcurrency({required OcurrencyModel instance}) =>
+      <String, dynamic>{
+        'id': instance.id,
+        'dataRegistro': instance.dataRegistro,
+        'dataAt': instance.dataAt,
+        'protocolo': instance.protocolo,
+        'dataOcorrencia': instance.dataOcorrencia,
+        'ocorrencia': instance.ocorrencia,
+        'previsao': instance.previsao!.toJson(),
+        'responsavel': instance.responsavel!.toJson(),
+        'channel': instance.channel!.toJson(),
+        'user': instance.user!.toJson(),
+        'status': instance.status!.toJson(),
+        'cliente': instance.cliente!.getClienteMap(instance: instance.cliente!),
+        'fornecedores':
+            instance.fornecedores!.map((item) => item.toJson()).toList(),
+        'typeOcurrencyId': instance.typeOcurrencyId!.toJson(),
+      };
+
+  static OcurrencyModel reset() => OcurrencyModel(
+        id: null,
+        dataRegistro: null,
+        dataAt: null,
+        protocolo: null,
+        dataOcorrencia: null,
+        ocorrencia: null,
+        previsao: null,
+        responsavel: null,
+        channel: null,
+        user: null,
+        status: null,
+        cliente: null,
+        fornecedores: null,
+        anexos: null,
+        comentarios: null,
+        typeOcurrencyId: null,
+      );
 }
 
 @JsonSerializable()
@@ -77,5 +115,14 @@ class Previsao {
     final data = doc.data()! as Map<String, dynamic>;
     data.putIfAbsent('id', () => doc.id);
     return Previsao.fromJson(data);
+  }
+
+  static List<Previsao> setPrevisao() {
+    List<Previsao> listPrevisao = [];
+    listPrevisao.add(Previsao(id: '0', name: 'No prazo'));
+    listPrevisao.add(Previsao(id: '1', name: 'Vencendo'));
+    listPrevisao.add(Previsao(id: '2', name: 'Vencidas'));
+    listPrevisao.add(Previsao(id: '3', name: 'Encerradas'));
+    return listPrevisao;
   }
 }

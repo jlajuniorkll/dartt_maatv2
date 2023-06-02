@@ -23,15 +23,13 @@ class FormClient extends StatelessWidget {
               'Dados do Consumidor',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
             ),
-                                  Container(
+            Container(
               padding: const EdgeInsets.all(8),
               alignment: Alignment.center,
               child: const Text.rich(
                 TextSpan(
                   children: [
-                    TextSpan(
-                        text:
-                            'Preencha os dados do cliente reclamante.'),
+                    TextSpan(text: 'Preencha os dados do cliente reclamante.'),
                   ],
                 ),
               ),
@@ -69,6 +67,11 @@ class FormClient extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: InkWell(
+                      hoverColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      borderRadius: BorderRadius.circular(18),
                       onTap: () => showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
@@ -182,7 +185,6 @@ class FormProcurador extends StatelessWidget {
           'Dados do Procurador',
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
-        
         const SizedBox(
           height: 16,
         ),
@@ -216,6 +218,11 @@ class FormProcurador extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
                     onTap: () => showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),

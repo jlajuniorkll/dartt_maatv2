@@ -21,22 +21,21 @@ class ClienteModel {
   String? estado;
   ProcuradorModel? procurador;
 
-
-  ClienteModel({
-    this.id,
-    this.nome,
-    this.cpf,
-    this.nascimento,
-    this.foneWhats,
-    this.telefone,
-    this.email,
-    this.cep,
-    this.numero,
-    this.logradouro,
-    this.bairro,
-    this.cidade,
-    this.estado,
-  });
+  ClienteModel(
+      {this.id,
+      this.nome,
+      this.cpf,
+      this.nascimento,
+      this.foneWhats,
+      this.telefone,
+      this.email,
+      this.cep,
+      this.numero,
+      this.logradouro,
+      this.bairro,
+      this.cidade,
+      this.estado,
+      this.procurador});
 
   factory ClienteModel.fromJson(Map<String, dynamic> json) =>
       _$ClienteModelFromJson(json);
@@ -48,4 +47,39 @@ class ClienteModel {
     data.putIfAbsent('id', () => doc.id);
     return ClienteModel.fromJson(data);
   }
+
+  Map<String, dynamic> getClienteMap({required ClienteModel instance}) =>
+      <String, dynamic>{
+        'id': instance.id,
+        'nome': instance.nome,
+        'cpf': instance.cpf,
+        'nascimento': instance.nascimento,
+        'foneWhats': instance.foneWhats,
+        'telefone': instance.telefone,
+        'email': instance.email,
+        'cep': instance.cep,
+        'numero': instance.numero,
+        'logradouro': instance.logradouro,
+        'bairro': instance.bairro,
+        'cidade': instance.cidade,
+        'estado': instance.estado,
+        'procurador': instance.procurador!.toJson()
+      };
+
+  static ClienteModel reset() => ClienteModel(
+      id: null,
+      nome: null,
+      cpf: null,
+      nascimento: null,
+      foneWhats: null,
+      telefone: null,
+      email: null,
+      cep: null,
+      numero: null,
+      logradouro: null,
+      bairro: null,
+      cidade: null,
+      estado: null,
+      procurador:
+          ProcuradorModel(id: null, nome: null, cpf: null, nascimento: null));
 }

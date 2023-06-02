@@ -4,18 +4,18 @@ import 'package:json_annotation/json_annotation.dart';
 part 'typeocurrency_model.g.dart';
 
 @JsonSerializable()
-class TypeOcurrencyModel{
+class TypeOcurrencyModel {
   String? id;
   String? name;
   String? description;
   bool isExpanded;
 
-TypeOcurrencyModel({
-  this.id,
-  this.name,
-  this.description,
-  this.isExpanded = false,
-});
+  TypeOcurrencyModel({
+    this.id,
+    this.name,
+    this.description,
+    this.isExpanded = false,
+  });
 
   factory TypeOcurrencyModel.fromJson(Map<String, dynamic> json) =>
       _$TypeOcurrencyModelFromJson(json);
@@ -28,4 +28,10 @@ TypeOcurrencyModel({
     return TypeOcurrencyModel.fromJson(data);
   }
 
+  static TypeOcurrencyModel reset() => TypeOcurrencyModel(
+        id: null,
+        name: null,
+        description: null,
+        isExpanded: false,
+      );
 }

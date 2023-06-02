@@ -21,4 +21,7 @@ class ChannelModel {
     data.putIfAbsent('id', () => doc.id);
     return ChannelModel.fromJson(data);
   }
+
+  static ChannelModel reset() =>
+      ChannelModel(id: null, name: null, description: null);
 }

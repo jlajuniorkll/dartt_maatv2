@@ -47,17 +47,33 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        onPressed: () {
-                          Get.back();
-                          controller.setPage(0);
-                        },
-                        icon: const Icon(Icons.close),
-                      )),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            onPressed: () {
+                              Get.back();
+                              controller.setPage(0);
+                            },
+                            icon: const Icon(Icons.close),
+                          )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: IconButton(
+                            onPressed: () {
+                              Get.back();
+                              controller.setPage(0);
+                            },
+                            icon: const Icon(Icons.restart_alt),
+                          )),
+                    ),
+                  ],
                 ),
                 ExpandablePageView(
                   physics: const NeverScrollableScrollPhysics(),

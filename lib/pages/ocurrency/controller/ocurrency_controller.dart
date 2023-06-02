@@ -68,6 +68,7 @@ class OcurrencyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    ocurrency.previsao = Previsao.setPrevisao()[0];
     getAllOcurrency();
   }
 
@@ -507,19 +508,13 @@ class OcurrencyController extends GetxController {
 
     final userController = Get.find<UserController>();
     ocurrency.user = userController.usuarioLogado;
-
     ocurrency.dataOcorrencia = dataOcorrenciaController.text;
-    // ocurrency.ocorrencia = ocurrency.ocorrencia;
-
     ocurrency.cliente = cliente;
     ocurrency.fornecedores = listFornecedor;
     ocurrency.anexos = listAnexos;
 
     ocurrency.typeOcurrencyId = typeOcurrency;
-
-    // ocurrency.id; // ver
-    // ocurrency.dataAt;
-    // ocurrency.previsao; // ver
+    ocurrency.dataAt = ocurrency.dataRegistro;
     ComentarioModel comentarios = ComentarioModel(
         description: "Reclamação aberta",
         dataComentario: ocurrency.dataRegistro,
@@ -527,42 +522,50 @@ class OcurrencyController extends GetxController {
     ocurrency.comentarios?.add(comentarios);
     ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
     await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
+    clearAll();
     getAllOcurrency();
     update();
   }
 
-  void setOcurrency(OcurrencyModel ocurrencyUpdate) async {
-    cliente.procurador = ProcuradorModel(
+  void setOcurrency(OcurrencyModel ocurrencyUpdate) {
+    ocurrency.cliente!.procurador = ocurrencyUpdate.cliente!.procurador;
+    ocurrency.cliente!.procurador = ProcuradorModel(
         id: ocurrencyUpdate.cliente!.procurador!.id,
         nome: ocurrencyUpdate.cliente!.procurador!.nome,
         cpf: ocurrencyUpdate.cliente!.procurador!.cpf,
-        nascimento: ocurrencyUpdate.cliente!.procurador!.nascimento);
+        nascimento: procurador.nascimento);
     ocurrency.user = ocurrencyUpdate.user;
     ocurrency.dataOcorrencia = ocurrencyUpdate.dataOcorrencia;
-    // ocurrency.ocorrencia = ocurrency.ocorrencia;
-
     ocurrency.cliente = ocurrencyUpdate.cliente;
     ocurrency.fornecedores = ocurrencyUpdate.fornecedores;
     ocurrency.anexos = ocurrencyUpdate.anexos;
-
     ocurrency.typeOcurrencyId = ocurrencyUpdate.typeOcurrencyId;
-
-    // ocurrency.id; // ver
-    // ocurrency.dataAt;
-    // ocurrency.previsao; // ver
-    /*ComentarioModel comentarios = ComentarioModel(
-        description: "Reclamação aberta",
-        dataComentario: ocurrency.dataRegistro,
-        usuario: ocurrency.user);
-    ocurrency.comentarios?.add(comentarios);*/
-    //ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
-    //await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
+    ocurrency.dataAt = ocurrencyUpdate.dataRegistro;
+    ocurrency.comentarios = ocurrencyUpdate.comentarios;
+    ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
+    ocurrency.dataRegistro = ocurrencyUpdate.dataRegistro;
+    ocurrency.protocolo = ocurrencyUpdate.protocolo;
+    ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
+    ocurrency.previsao = ocurrencyUpdate.previsao;
+    ocurrency.responsavel = ocurrencyUpdate.responsavel;
+    ocurrency.channel = ocurrencyUpdate.channel;
+    ocurrency.status = ocurrencyUpdate.status;
     update();
   }
 
-  void limpaOcurrency() {
+  void clearAll() {
     limpaEnderecoCEP();
+    OcurrencyModel.reset();
+    listFornecedor.clear();
+    listAnexos.clear();
+    ClienteModel.reset();
+    ProcuradorModel.reset();
+    TypeOcurrencyModel.reset();
   }
+
+  //void limpaOcurrency() {
+  //  limpaEnderecoCEP();
+  // }
 
   Future<void> getAllOcurrency({bool? injection}) async {
     if (injection == false) setLoading(true);

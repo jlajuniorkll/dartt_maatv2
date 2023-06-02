@@ -27,4 +27,11 @@ class ProcuradorModel {
     data.putIfAbsent('id', () => doc.id);
     return ProcuradorModel.fromJson(data);
   }
+
+  static ProcuradorModel reset() => ProcuradorModel(
+        id: null,
+        nome: null,
+        cpf: null,
+        nascimento: null,
+      );
 }
