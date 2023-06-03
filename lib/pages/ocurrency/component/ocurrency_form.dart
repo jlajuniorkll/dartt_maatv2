@@ -69,6 +69,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                             onPressed: () {
                               Get.back();
                               controller.setPage(0);
+                              controllerOcurrency.clearAll(deleteAnexos: true);
                             },
                             icon: const Icon(Icons.restart_alt),
                           )),

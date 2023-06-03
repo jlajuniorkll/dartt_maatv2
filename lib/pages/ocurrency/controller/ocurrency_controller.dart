@@ -553,7 +553,14 @@ class OcurrencyController extends GetxController {
     update();
   }
 
-  void clearAll() {
+  void clearAll({bool? deleteAnexos = false}) {
+    if (deleteAnexos == true) {
+      for (var la in ocurrency.anexos!) {
+        removeFileFirebase(la);
+      }
+      ocurrency.anexos!.clear();
+      listAnexos.clear();
+    }
     limpaEnderecoCEP();
     OcurrencyModel.reset();
     listFornecedor.clear();
