@@ -4,6 +4,7 @@ import 'package:dartt_maat_v2/pages/channel/binding/channel_binding.dart';
 import 'package:dartt_maat_v2/pages/channel/view/channel_screen.dart';
 import 'package:dartt_maat_v2/pages/dashboard/view/dashboard_screen.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/binding/ocurrency_binding.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/view/ocurrency_print.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/view/ocurrency_screen.dart';
 import 'package:dartt_maat_v2/pages/status/binding/status_binding.dart';
 import 'package:dartt_maat_v2/pages/status/view/status_screen.dart';
@@ -28,6 +29,7 @@ abstract class AppPages {
     GetPage(name: PageRoutes.users, page: () => const UserScreen()),
     GetPage(name: PageRoutes.typeocurrency, page: () => const TypeOcurrencyScreen()),
     GetPage(name: PageRoutes.ocurrency, page: () => const OcurrencyScreen()),
+    GetPage(name: PageRoutes.ocurrencyDetail, page: () => ScreenDetail()),
   ];
 }
 
@@ -40,4 +42,5 @@ abstract class PageRoutes {
   static const String users = '/users';
   static const String typeocurrency = '/typeocurrency';
   static const String ocurrency = '/ocurrency';
+  static const String ocurrencyDetail = '/ocurrency-detail';
 }

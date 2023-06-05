@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:dartt_maat_v2/results/generics_result.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoder2/geocoder2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -24,6 +24,8 @@ import 'package:dartt_maat_v2/pages/ocurrency/repository/ocurrency_repository.da
 import 'package:dartt_maat_v2/pages/typeocurrency/controller/typeocurrency_controller.dart';
 import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
 import 'package:dartt_maat_v2/services/loading_services.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class OcurrencyController extends GetxController {
   final ocurrencyRepository = OcurrencyRepository();
@@ -594,5 +596,96 @@ class OcurrencyController extends GetxController {
         barBlur: 0,
       );
     });
+  }
+
+  Future<Uint8List> fileOcurrencyPDF(OcurrencyModel ocurrency) async {
+    setLoading(true);
+    final pdf = pw.Document();
+    final ByteData bytes1 = await rootBundle.load('images/procon.png');
+    final Uint8List img1 = bytes1.buffer.asUint8List();
+
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      build: (pw.Context context) {
+        return [
+          pw.Align(
+              alignment: pw.Alignment.center,
+              child: pw.Image(pw.MemoryImage(img1), width: 100, height: 100)),
+          pw.Divider(),
+          pw.Align(
+              alignment: pw.Alignment.center,
+              child: pw.Text("Reclamação",
+                  style: pw.TextStyle(
+                      fontSize: 14, fontWeight: pw.FontWeight.bold))),
+          pw.Divider(),
+          pw.Text('Protocolo: ${ocurrency.protocolo}'),
+          // pw.Text('Última atualização: ${ocurrency.dataAt}'),
+          pw.Text('Data da reclamação: ${ocurrency.dataRegistro}'),
+          pw.Text('Canal de atendimento: ${ocurrency.channel!.name}'),
+          pw.Text('Solicitante: ${ocurrency.user!.name}'),
+          pw.Text('Situação: ${ocurrency.status!.name}'),
+          pw.Divider(),
+          pw.Align(
+              alignment: pw.Alignment.center,
+              child: pw.Text("Dados do cliente",
+                  style: pw.TextStyle(
+                      fontSize: 14, fontWeight: pw.FontWeight.bold))),
+          pw.Divider(),
+          pw.Text('Nome: ${ocurrency.cliente!.nome}'),
+          pw.Text('CPF: ${ocurrency.cliente!.cpf}'),
+          pw.Text('Data de nascimento: ${ocurrency.cliente!.nascimento}'),
+          pw.Text('Email: ${ocurrency.cliente!.email}'),
+          pw.Text('Telefone/whatsapp: ${ocurrency.cliente!.foneWhats}'),
+          pw.Text('Telefone: ${ocurrency.cliente!.telefone}'),
+          pw.Text('CEP: ${ocurrency.cliente!.cep}'),
+          pw.Text('Endereço: ${ocurrency.cliente!.logradouro}'),
+          pw.Text('Número: ${ocurrency.cliente!.numero}'),
+          pw.Text('Bairro: ${ocurrency.cliente!.bairro}'),
+          pw.Divider(),
+          pw.Divider(),
+          for (var fo in ocurrency.fornecedores!)
+            pw.Column(children: [
+              pw.Align(
+                  alignment: pw.Alignment.center,
+                  child: pw.Text("Dados do Fornecedor ${ocurrency.fornecedores!.indexOf(fo)}",
+                      style: pw.TextStyle(
+                          fontSize: 14, fontWeight: pw.FontWeight.bold))),
+              pw.Text('CNPJ: ${fo.cnpj}'),
+              pw.Text('Razão Social: ${fo.razaoSocial}'),
+              pw.Text('Nome Fantasia: ${fo.fantasia}'),
+              pw.Text('Situacao: ${fo.situacao}'),
+              pw.Text('Email: ${fo.email}'),
+              pw.Text('Telefone: ${fo.telefone}'),
+              pw.Divider(),
+            ]),
+          pw.Align(
+              alignment: pw.Alignment.center,
+              child: pw.Text("Detalhes",
+                  style: pw.TextStyle(
+                      fontSize: 14, fontWeight: pw.FontWeight.bold))),
+          pw.Divider(),
+          pw.Text('Data da compra/reclamação: ${ocurrency.dataOcorrencia}'),
+          pw.Text(
+              'Tipo de ocorrência: ${ocurrency.typeOcurrencyId!.name} - ${ocurrency.typeOcurrencyId!.description}'),
+          pw.Text('Descrição da reclamação: ${ocurrency.ocorrencia}'),
+          pw.Text("Comentários: "),
+          if (ocurrency.comentarios != null)
+          for (var item in ocurrency.comentarios!) pw.Text(item.description!),
+          pw.Column(children: [
+            pw.Divider(),
+            pw.Align(
+                alignment: pw.Alignment.center,
+                child: pw.Text("Anexo",
+                    style: pw.TextStyle(
+                        fontSize: 14, fontWeight: pw.FontWeight.bold))),
+            pw.Divider(),
+            for (var an in ocurrency.anexos!) pw.Text(an.name!),
+          ]),
+        ];
+      },
+    ));
+    final bytes = await pdf.save();
+    setLoading(false);
+    return bytes;
   }
 }

@@ -1,7 +1,8 @@
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
+import 'package:dartt_maat_v2/page_routes/app_routes.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_form.dart';
-import 'package:dartt_maat_v2/pages/ocurrency/view/ocurrency_print.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class OcurrencyListTile extends StatelessWidget {
   const OcurrencyListTile({Key? key, required this.ocurrencyReceived})
@@ -11,8 +12,9 @@ class OcurrencyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  
     return GestureDetector(
-      onTap: () => ScreenDetail(ocurrency: ocurrencyReceived),
+      onTap: () => Get.toNamed(PageRoutes.ocurrencyDetail, arguments: ocurrencyReceived),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
         child: Padding(
