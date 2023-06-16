@@ -71,7 +71,7 @@ class OcurrencyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    ocurrency.previsao = Previsao.setPrevisao()[0];
+    // ocurrency.previsao = Previsao.setPrevisao()[0];
     getAllOcurrency();
   }
 
@@ -144,9 +144,9 @@ class OcurrencyController extends GetxController {
   String getDataHoraAtual() {
     var dia = DateTime.now().day;
     var mes = DateTime.now().month;
-    var ano = DateTime.now().year;
-    var hora = DateTime.now().hour;
-    var min = DateTime.now().minute;
+    var ano = DateTime.now().year.toString().padLeft(2, "0");
+    var hora = DateTime.now().hour.toString().padLeft(2, "0");
+    var min = DateTime.now().minute.toString().padLeft(2, "0");
     return '$dia/$mes/$ano - $hora:$min';
   }
 
@@ -486,9 +486,9 @@ class OcurrencyController extends GetxController {
     int year = dateNow.year;
     int month = dateNow.month;
     int day = dateNow.day;
-    int hour = dateNow.hour;
-    int minute = dateNow.minute;
-    int second = dateNow.second;
+    var hour = dateNow.hour.toString().padLeft(2, "0");
+    var minute = dateNow.minute.toString().padLeft(2, "0");
+    var second = dateNow.second.toString().padLeft(2, "0");
     return '$year$month$day$hour$minute$second';
   }
 
@@ -521,7 +521,7 @@ class OcurrencyController extends GetxController {
     ocurrency.cliente = cliente;
     ocurrency.fornecedores = listFornecedor;
     ocurrency.anexos = listAnexos;
-    ocurrency.previsao = Previsao(id: '0', name: 'No prazo');
+    // ocurrency.previsao = Previsao(id: '0', name: 'No prazo');
     ocurrency.typeOcurrencyId = typeOcurrency;
     ocurrency.dataAt = ocurrency.dataRegistro;
     ComentarioModel comentarios = ComentarioModel(
@@ -537,25 +537,25 @@ class OcurrencyController extends GetxController {
   }
 
   void setOcurrency(OcurrencyModel ocurrencyUpdate) {
-    ocurrency.cliente!.procurador = ocurrencyUpdate.cliente!.procurador;
-    ocurrency.cliente!.procurador = ProcuradorModel(
-        id: ocurrencyUpdate.cliente!.procurador!.id,
+    /*ocurrency.cliente!.procurador = ProcuradorModel(
         nome: ocurrencyUpdate.cliente!.procurador!.nome,
         cpf: ocurrencyUpdate.cliente!.procurador!.cpf,
-        nascimento: procurador.nascimento);
+        nascimento: ocurrencyUpdate.cliente!.procurador!.nascimento);*/
+    ocurrency.id = ocurrencyUpdate.id;
     ocurrency.user = ocurrencyUpdate.user;
     ocurrency.dataOcorrencia = ocurrencyUpdate.dataOcorrencia;
-    ocurrency.cliente = ocurrencyUpdate.cliente;
+
+    cliente = ocurrencyUpdate.cliente!;
+    // ocurrency.cliente = ocurrencyUpdate.cliente;
     ocurrency.fornecedores = ocurrencyUpdate.fornecedores;
     ocurrency.anexos = ocurrencyUpdate.anexos;
     ocurrency.typeOcurrencyId = ocurrencyUpdate.typeOcurrencyId;
-    ocurrency.dataAt = ocurrencyUpdate.dataRegistro;
+    ocurrency.dataAt = getDataHoraAtual();
     ocurrency.comentarios = ocurrencyUpdate.comentarios;
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
     ocurrency.dataRegistro = ocurrencyUpdate.dataRegistro;
     ocurrency.protocolo = ocurrencyUpdate.protocolo;
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
-    ocurrency.previsao = ocurrencyUpdate.previsao;
     ocurrency.responsavel = ocurrencyUpdate.responsavel;
     ocurrency.channel = ocurrencyUpdate.channel;
     ocurrency.status = ocurrencyUpdate.status;
@@ -577,6 +577,30 @@ class OcurrencyController extends GetxController {
     ClienteModel.reset();
     ProcuradorModel.reset();
     TypeOcurrencyModel.reset();
+  }
+
+  Previsao getPrevisao(String data) {
+    var tempoVencido = 30;
+    var tempoVencendo = 5;
+    List<String> campos = data.split('/');
+    int dia = int.parse(campos[0]);
+    int mes = int.parse(campos[1]);
+    int ano = int.parse(campos[2].substring(0, 4));
+    DateTime dataOcorrencia = DateTime(ano, mes, dia);
+    DateTime dataPrevisao = dataOcorrencia.add(Duration(days: tempoVencido));
+    DateTime dataPrevista =
+        dataOcorrencia.add(Duration(days: ((tempoVencido) - tempoVencendo)));
+    DateTime dataHoje = DateTime.now();
+
+    if (dataHoje.compareTo(dataPrevisao) < 0) {
+      if (dataHoje.compareTo(dataPrevista) < 0) {
+        return Previsao.setPrevisao()[0];
+      } else {
+        return Previsao.setPrevisao()[1];
+      }
+    } else {
+      return Previsao.setPrevisao()[2];
+    }
   }
 
   //void limpaOcurrency() {
@@ -655,7 +679,8 @@ class OcurrencyController extends GetxController {
             pw.Column(children: [
               pw.Align(
                   alignment: pw.Alignment.center,
-                  child: pw.Text("Dados do Fornecedor ${ocurrency.fornecedores!.indexOf(fo)+1}",
+                  child: pw.Text(
+                      "Dados do Fornecedor ${ocurrency.fornecedores!.indexOf(fo) + 1}",
                       style: pw.TextStyle(
                           fontSize: 14, fontWeight: pw.FontWeight.bold))),
               pw.Text('CNPJ: ${fo.cnpj}'),
@@ -678,7 +703,7 @@ class OcurrencyController extends GetxController {
           pw.Text('Descrição da reclamação: ${ocurrency.ocorrencia}'),
           pw.Text("Comentários: "),
           if (ocurrency.comentarios != null)
-          for (var item in ocurrency.comentarios!) pw.Text(item.description!),
+            for (var item in ocurrency.comentarios!) pw.Text(item.description!),
           pw.Column(children: [
             pw.Divider(),
             pw.Align(

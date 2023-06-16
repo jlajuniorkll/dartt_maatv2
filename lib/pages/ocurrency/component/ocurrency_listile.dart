@@ -1,7 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/page_routes/app_routes.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_badge.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_form.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
 import 'package:flutter/material.dart';
@@ -19,28 +18,25 @@ class OcurrencyListTile extends StatelessWidget {
       onTap: () =>
           Get.toNamed(PageRoutes.ocurrencyDetail, arguments: ocurrencyReceived),
       child: Card(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          elevation: 5,
+          clipBehavior: Clip.antiAlias,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30))),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              BadgeCustom(
+                  previsao: Get.find<OcurrencyController>()
+                      .getPrevisao(ocurrencyReceived.dataRegistro!)),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-Transform.rotate(
-                        angle: 45.0 * (-math.pi / 180.0),
-                        origin: const Offset(-100.0, 100.0),
-                        child:  Container(
-                          color: Colors.red,
-                          width: 200,
-                          height: 200,
-                        ),
-                      ),
                     Expanded(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -83,8 +79,8 @@ Transform.rotate(
                           context: context,
                           builder:
                               (_) => /*OcurrencyFormComment(
-                                ocurrency: widget.ocurrency,
-                                comentarios: widget.ocurrency.comentarios)),*/
+                            ocurrency: widget.ocurrency,
+                            comentarios: widget.ocurrency.comentarios)),*/
                                   const OcurrencyFormScreen()),
                       child: Container(
                         padding: const EdgeInsets.only(left: 4, right: 6),
@@ -112,9 +108,7 @@ Transform.rotate(
                 ),
               ),
             ],
-          ),
-        ),
-      ),
+          )),
     );
   }
 }

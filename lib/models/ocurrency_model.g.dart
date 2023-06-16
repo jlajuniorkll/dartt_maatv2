@@ -14,9 +14,6 @@ OcurrencyModel _$OcurrencyModelFromJson(Map<String, dynamic> json) =>
       protocolo: json['protocolo'] as String?,
       dataOcorrencia: json['dataOcorrencia'] as String?,
       ocorrencia: json['ocorrencia'] as String?,
-      previsao: json['previsao'] == null
-          ? null
-          : Previsao.fromJson(json['previsao'] as Map<String, dynamic>),
       responsavel: json['responsavel'] == null
           ? null
           : UserModel.fromJson(json['responsavel'] as Map<String, dynamic>),
@@ -55,16 +52,15 @@ Map<String, dynamic> _$OcurrencyModelToJson(OcurrencyModel instance) =>
       'protocolo': instance.protocolo,
       'dataOcorrencia': instance.dataOcorrencia,
       'ocorrencia': instance.ocorrencia,
-      'previsao': instance.previsao!.toJson(),
-      'responsavel': instance.responsavel!.toJson(),
-      'channel': instance.channel!.toJson(),
-      'user': instance.user!.toJson(),
-      'status': instance.status!.toJson(),
-      'cliente': instance.cliente!.toJson(),
-      'fornecedores': instance.fornecedores!.map((item) => item.toJson()).toList(),
-      'anexos': instance.anexos!.map((item) => item.toJson()).toList(),
-      // 'comentarios': instance.comentarios!.map((item) => item.toJson()).toList(),
-      'typeOcurrencyId': instance.typeOcurrencyId!.toJson(),
+      'responsavel': instance.responsavel,
+      'channel': instance.channel,
+      'user': instance.user,
+      'status': instance.status,
+      'cliente': instance.cliente,
+      'fornecedores': instance.fornecedores,
+      'anexos': instance.anexos,
+      'comentarios': instance.comentarios,
+      'typeOcurrencyId': instance.typeOcurrencyId,
     };
 
 Previsao _$PrevisaoFromJson(Map<String, dynamic> json) => Previsao(

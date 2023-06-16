@@ -19,7 +19,7 @@ class OcurrencyModel {
   String? protocolo;
   String? dataOcorrencia;
   String? ocorrencia;
-  Previsao? previsao;
+  // Previsao? previsao;
   UserModel? responsavel; // somente para operador
   ChannelModel? channel; // somente para operador
   UserModel? user; // somente para operador
@@ -37,7 +37,6 @@ class OcurrencyModel {
     this.protocolo,
     this.dataOcorrencia,
     this.ocorrencia,
-    this.previsao,
     this.responsavel,
     this.channel,
     this.user,
@@ -68,7 +67,6 @@ class OcurrencyModel {
         'protocolo': instance.protocolo,
         'dataOcorrencia': instance.dataOcorrencia,
         'ocorrencia': instance.ocorrencia,
-        'previsao': instance.previsao!.toJson(),
         'responsavel': instance.responsavel!.toJson(),
         'channel': instance.channel!.toJson(),
         'user': instance.user!.toJson(),
@@ -86,7 +84,6 @@ class OcurrencyModel {
         protocolo: null,
         dataOcorrencia: null,
         ocorrencia: null,
-        previsao: null,
         responsavel: null,
         channel: null,
         user: null,
