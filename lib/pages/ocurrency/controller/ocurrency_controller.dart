@@ -543,22 +543,24 @@ class OcurrencyController extends GetxController {
         nascimento: ocurrencyUpdate.cliente!.procurador!.nascimento);*/
     ocurrency.id = ocurrencyUpdate.id;
     ocurrency.user = ocurrencyUpdate.user;
+    ocurrency.dataRegistro = ocurrencyUpdate.dataRegistro;
+    ocurrency.status = ocurrencyUpdate.status;
+    ocurrency.responsavel = ocurrencyUpdate.responsavel;
+    ocurrency.channel = ocurrencyUpdate.channel;
     ocurrency.dataOcorrencia = ocurrencyUpdate.dataOcorrencia;
+    dataOcorrenciaController.text = ocurrency.dataOcorrencia!;
+    dataNascimentoController.text = ocurrencyUpdate.cliente!.nascimento!;
 
     cliente = ocurrencyUpdate.cliente!;
-    // ocurrency.cliente = ocurrencyUpdate.cliente;
     ocurrency.fornecedores = ocurrencyUpdate.fornecedores;
     ocurrency.anexos = ocurrencyUpdate.anexos;
     ocurrency.typeOcurrencyId = ocurrencyUpdate.typeOcurrencyId;
     ocurrency.dataAt = getDataHoraAtual();
     ocurrency.comentarios = ocurrencyUpdate.comentarios;
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
-    ocurrency.dataRegistro = ocurrencyUpdate.dataRegistro;
     ocurrency.protocolo = ocurrencyUpdate.protocolo;
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
-    ocurrency.responsavel = ocurrencyUpdate.responsavel;
-    ocurrency.channel = ocurrencyUpdate.channel;
-    ocurrency.status = ocurrencyUpdate.status;
+
     update();
   }
 

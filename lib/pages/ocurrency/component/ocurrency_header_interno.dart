@@ -14,6 +14,9 @@ class HeaderFormInterno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    StatusModel statusSelected = StatusModel();
+    ChannelModel channnelSelected = ChannelModel();
+    UserModel userSelected = UserModel();
     final controller = Get.find<OcurrencyController>();
     final userController = Get.find<UserController>();
     return Form(
@@ -44,17 +47,24 @@ class HeaderFormInterno extends StatelessWidget {
               children: [
                 CustomTextField(
                     label: "Usuário",
-                    iniValue:
-                        userController.usuarioLogado!.name ?? "Não logado",
+                    iniValue: controller.ocurrency.user?.name ??
+                        userController.usuarioLogado?.name ??
+                        "Não Logado",
                     isInActive: true),
                 CustomTextField(
                     label: "Data Atual/Registro",
-                    iniValue: controller.getDataHoraAtual(),
+                    iniValue: controller.ocurrency.dataRegistro ??
+                        controller.getDataHoraAtual(),
                     onSaved: (newDataAt) =>
                         controller.ocurrency.dataRegistro = newDataAt,
                     isInActive: true),
                 GetBuilder<StatusController>(
                   builder: (statusController) {
+                    if (controller.ocurrency.status != null) {
+                      statusSelected = statusController.selectStatus.elementAt(
+                          statusController.selectStatus.indexWhere((element) =>
+                              element.id == controller.ocurrency.status!.id));
+                    }
                     return DropdownButtonHideUnderline(
                       child: ButtonTheme(
                         alignedDropdown: true,
@@ -68,7 +78,9 @@ class HeaderFormInterno extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(18)),
                           ),
                           borderRadius: BorderRadius.circular(18),
-                          value: statusController.statusSelected,
+                          value: statusSelected.id != null
+                              ? statusSelected
+                              : statusController.statusSelected,
                           onChanged: (StatusModel? newValue) {
                             statusController.setStatusSelected(newValue!);
                           },
@@ -99,6 +111,13 @@ class HeaderFormInterno extends StatelessWidget {
                 ),
                 GetBuilder<ChannelController>(
                   builder: (channelController) {
+                    if (controller.ocurrency.channel != null) {
+                      channnelSelected = channelController.selectChannel
+                          .elementAt(channelController.selectChannel.indexWhere(
+                              (element) =>
+                                  element.id ==
+                                  controller.ocurrency.channel!.id));
+                    }
                     return DropdownButtonHideUnderline(
                       child: ButtonTheme(
                         alignedDropdown: true,
@@ -112,7 +131,9 @@ class HeaderFormInterno extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(18)),
                           ),
                           borderRadius: BorderRadius.circular(18),
-                          value: channelController.channnelSelected,
+                          value: channnelSelected.id != null
+                              ? channnelSelected
+                              : channelController.channnelSelected,
                           onChanged: (ChannelModel? newValue) {
                             channelController.setChannelSelected(newValue!);
                           },
@@ -143,6 +164,12 @@ class HeaderFormInterno extends StatelessWidget {
                 ),
                 GetBuilder<UserController>(
                   builder: (userManager) {
+                    if (controller.ocurrency.responsavel != null) {
+                      userSelected = userManager.selectResponsavel.elementAt(
+                          userManager.selectResponsavel.indexWhere((element) =>
+                              element.id ==
+                              controller.ocurrency.responsavel!.id));
+                    }
                     return DropdownButtonHideUnderline(
                       child: ButtonTheme(
                         alignedDropdown: true,
@@ -156,7 +183,9 @@ class HeaderFormInterno extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(18)),
                           ),
                           borderRadius: BorderRadius.circular(18),
-                          value: userManager.responsavelSelected,
+                          value: userSelected.id != null
+                              ? userSelected
+                              : userManager.responsavelSelected,
                           onChanged: (UserModel? newValue) {
                             userManager.setResponsavelSelected(newValue!);
                           },
