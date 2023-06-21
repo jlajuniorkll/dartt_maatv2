@@ -24,6 +24,7 @@ class TypeOcurrencyController extends GetxController {
   bool notSuggestion = true;
   String isTypeSelected = '';
   RxString searchTitle = ''.obs;
+  bool radioSelected = false;
 
   void setLoading(bool value) {
     isLoading = value;
@@ -42,6 +43,11 @@ class TypeOcurrencyController extends GetxController {
 
   void setSuggestion(bool value) {
     notSuggestion = value;
+    update();
+  }
+
+  void setSelected(bool value) {
+    radioSelected = value;
     update();
   }
 

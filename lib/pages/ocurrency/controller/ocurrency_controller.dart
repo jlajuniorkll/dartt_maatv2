@@ -127,7 +127,8 @@ class OcurrencyController extends GetxController {
     update();
   }
 
-  void setTypeOcurrency(String value) {
+  void setTypeOcurrency(TypeOcurrencyModel value) {
+    typeOcurrency = value;
     update();
   }
 
@@ -549,17 +550,35 @@ class OcurrencyController extends GetxController {
     ocurrency.channel = ocurrencyUpdate.channel;
     ocurrency.dataOcorrencia = ocurrencyUpdate.dataOcorrencia;
     dataOcorrenciaController.text = ocurrency.dataOcorrencia!;
+    cliente = ocurrencyUpdate.cliente!;
     dataNascimentoController.text = ocurrencyUpdate.cliente!.nascimento!;
 
-    cliente = ocurrencyUpdate.cliente!;
+    if (ocurrencyUpdate.cliente!.procurador!.id != null) {
+      dataNascProcuradorController.text =
+          ocurrencyUpdate.cliente!.procurador!.nascimento!;
+    }
+    numeroController.text = ocurrencyUpdate.cliente!.numero!;
+    logradouroController.text = ocurrencyUpdate.cliente!.logradouro!;
+    bairroController.text = ocurrencyUpdate.cliente!.bairro!;
+    cidadeController.text = ocurrencyUpdate.cliente!.cidade!;
+    estadoController.text = ocurrencyUpdate.cliente!.estado!;
+    cepController.text = ocurrencyUpdate.cliente!.cep!;
+
     ocurrency.fornecedores = ocurrencyUpdate.fornecedores;
-    ocurrency.anexos = ocurrencyUpdate.anexos;
+    listFornecedor.addAll(ocurrency.fornecedores!);
+    // typeOcurrencyController.text = TextEditingController();
+    //TODO: falta ajustar o tipo de ocorrencia
     ocurrency.typeOcurrencyId = ocurrencyUpdate.typeOcurrencyId;
-    ocurrency.dataAt = getDataHoraAtual();
+    typeOcurrency = ocurrency.typeOcurrencyId!;
+
+    ocurrency.anexos = ocurrencyUpdate.anexos;
+    listAnexos.addAll(ocurrency.anexos!);
     ocurrency.comentarios = ocurrencyUpdate.comentarios;
+
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
+    // TODO: criar campo para mostrar numero protocolo e data atualizacao
     ocurrency.protocolo = ocurrencyUpdate.protocolo;
-    ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
+    ocurrency.dataAt = getDataHoraAtual();
 
     update();
   }

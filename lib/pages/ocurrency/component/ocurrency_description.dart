@@ -14,6 +14,7 @@ class FormDescription extends StatefulWidget {
 
 class _FormDescriptionState extends State<FormDescription> {
   final searchController = TextEditingController();
+  TypeOcurrencyModel typeSelected = TypeOcurrencyModel();
   late bool iconClose;
 
   @override
@@ -24,7 +25,7 @@ class _FormDescriptionState extends State<FormDescription> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<OcurrencyController>();
+    final OcurrencyController controller = Get.find<OcurrencyController>();
     return Form(
         key: controller.formKeyDescription,
         child: Padding(
@@ -33,6 +34,15 @@ class _FormDescriptionState extends State<FormDescription> {
                 height: MediaQuery.of(context).size.height * .8,
                 child: GetBuilder<TypeOcurrencyController>(
                     builder: (typeController) {
+                  if (controller.ocurrency.typeOcurrencyId != null) {
+                    typeController.setTypeSelected(
+                        controller.ocurrency.typeOcurrencyId!.id!);
+                    typeSelected = typeController.allTypeOcurrencyFiltered
+                        .elementAt(typeController.allTypeOcurrencyFiltered
+                            .indexWhere((element) =>
+                                element.id ==
+                                controller.ocurrency.typeOcurrencyId!.id));
+                  }
                   return Column(mainAxisSize: MainAxisSize.min, children: [
                     const Text(
                       'Detalhes da reclamação',
@@ -113,16 +123,20 @@ class _FormDescriptionState extends State<FormDescription> {
                                   .allTypeOcurrencyFiltered[index],
                               groupValue: controller.typeOcurrency,
                               onChanged: (TypeOcurrencyModel? value) {
-                                setState(() {
-                                  controller.typeOcurrency = value!;
-                                  typeController.setTypeSelected(typeController
-                                      .allTypeOcurrencyFiltered[index].id!);
-                                });
+                                //setState(() {
+                                // controller.typeOcurrency = value!;
+                                controller.setTypeOcurrency(value!);
+                                typeController.setTypeSelected(typeController
+                                    .allTypeOcurrencyFiltered[index].id!);
+                                //});
                               },
                               title: Text(
                                   '${typeController.allTypeOcurrencyFiltered[index].name}'),
                               subtitle: Text(
                                   '${typeController.allTypeOcurrencyFiltered[index].description}'),
+                              selected: typeController
+                                      .allTypeOcurrencyFiltered[index] ==
+                                  typeSelected,
                             ),
                           );
                         },
