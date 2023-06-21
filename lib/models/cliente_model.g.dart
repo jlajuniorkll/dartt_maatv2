@@ -41,5 +41,5 @@ Map<String, dynamic> _$ClienteModelToJson(ClienteModel instance) =>
       'bairro': instance.bairro,
       'cidade': instance.cidade,
       'estado': instance.estado,
-      'procurador': instance.procurador,
+      'procurador': instance.procurador!.toJson(),
     };

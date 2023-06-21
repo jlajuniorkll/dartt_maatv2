@@ -66,17 +66,20 @@ class OcurrencyRepository {
   // buscar todas os canais
   Future<GenericsResult<OcurrencyModel>> getAllOcurrency() async {
     try {
-      final QuerySnapshot snapOcurrency = await fireRef.orderBy('protocolo').get();
+      final QuerySnapshot snapOcurrency =
+          await fireRef.orderBy('protocolo').get();
 
       if (snapOcurrency.docs.isNotEmpty) {
-        List<OcurrencyModel> data =
-            snapOcurrency.docs.map((d) => OcurrencyModel.fromDocument(d)).toList();
+        List<OcurrencyModel> data = snapOcurrency.docs
+            .map((d) => OcurrencyModel.fromDocument(d))
+            .toList();
         return GenericsResult<OcurrencyModel>.success(data);
       } else {
         return GenericsResult.error('Não existem ocorrências cadastradas!');
       }
     } catch (e) {
-      return GenericsResult.error('Erro ao consultar base de dados. -OCORRENCIA-');
+      return GenericsResult.error(
+          'Erro ao consultar base de dados. -OCORRENCIA-');
     }
   }
 }

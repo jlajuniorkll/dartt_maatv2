@@ -20,6 +20,6 @@ Map<String, dynamic> _$ComentarioModelToJson(ComentarioModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
-      'usuario': instance.usuario,
+      'usuario': instance.usuario!.toJson(),
       'dataComentario': instance.dataComentario,
     };

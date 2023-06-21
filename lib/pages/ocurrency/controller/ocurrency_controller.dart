@@ -40,6 +40,7 @@ class OcurrencyController extends GetxController {
 
   List<FornecedorModel> listFornecedor = [];
   List<AnexoModel> listAnexos = [];
+  List<ComentarioModel> commentarios = [];
   OcurrencyModel ocurrency = OcurrencyModel();
   ClienteModel cliente = ClienteModel();
   ProcuradorModel procurador = ProcuradorModel();
@@ -525,11 +526,12 @@ class OcurrencyController extends GetxController {
     // ocurrency.previsao = Previsao(id: '0', name: 'No prazo');
     ocurrency.typeOcurrencyId = typeOcurrency;
     ocurrency.dataAt = ocurrency.dataRegistro;
-    ComentarioModel comentarios = ComentarioModel(
+    ComentarioModel commm = ComentarioModel(
         description: "Reclamação aberta",
         dataComentario: ocurrency.dataRegistro,
         usuario: ocurrency.user);
-    ocurrency.comentarios?.add(comentarios);
+    commentarios.add(commm);
+    ocurrency.comentarios = commentarios;
     ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
     await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
     clearAll();
@@ -538,6 +540,7 @@ class OcurrencyController extends GetxController {
   }
 
   void setOcurrency(OcurrencyModel ocurrencyUpdate) {
+    clearAll();
     /*ocurrency.cliente!.procurador = ProcuradorModel(
         nome: ocurrencyUpdate.cliente!.procurador!.nome,
         cpf: ocurrencyUpdate.cliente!.procurador!.cpf,
@@ -553,9 +556,11 @@ class OcurrencyController extends GetxController {
     cliente = ocurrencyUpdate.cliente!;
     dataNascimentoController.text = ocurrencyUpdate.cliente!.nascimento!;
 
-    if (ocurrencyUpdate.cliente!.procurador!.id != null) {
+    if (ocurrencyUpdate.cliente!.procurador!.nome != null) {
       dataNascProcuradorController.text =
           ocurrencyUpdate.cliente!.procurador!.nascimento!;
+      procurador = ocurrencyUpdate.cliente!.procurador!;
+      setWhithProcurador(true);
     }
     numeroController.text = ocurrencyUpdate.cliente!.numero!;
     logradouroController.text = ocurrencyUpdate.cliente!.logradouro!;
@@ -598,6 +603,10 @@ class OcurrencyController extends GetxController {
     ClienteModel.reset();
     ProcuradorModel.reset();
     TypeOcurrencyModel.reset();
+    ProcuradorModel.reset();
+    procurador = ProcuradorModel();
+    dataNascProcuradorController.text = '';
+    setWhithProcurador(false);
   }
 
   Previsao getPrevisao(String data) {

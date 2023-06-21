@@ -84,7 +84,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                     FormClient(),
                     FormAdress(),
                     const FormFornecedor(),
-                    const FormDescription(),
+                    FormDescription(),
                     const FormDetails(),
                     const FormAnexos(),
                   ],
