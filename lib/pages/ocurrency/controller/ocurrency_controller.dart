@@ -130,6 +130,7 @@ class OcurrencyController extends GetxController {
 
   void setTypeOcurrency(TypeOcurrencyModel value) {
     typeOcurrency = value;
+    ocurrency.typeOcurrencyId = value;
     update();
   }
 
@@ -573,8 +574,10 @@ class OcurrencyController extends GetxController {
     listFornecedor.addAll(ocurrency.fornecedores!);
     // typeOcurrencyController.text = TextEditingController();
     //TODO: falta ajustar o tipo de ocorrencia
-    ocurrency.typeOcurrencyId = ocurrencyUpdate.typeOcurrencyId;
-    typeOcurrency = ocurrency.typeOcurrencyId!;
+    var typeController = Get.find<TypeOcurrencyController>();
+    ocurrency.typeOcurrencyId = typeController.selectTypeOcurrency.elementAt(
+        typeController.selectTypeOcurrency.indexWhere(
+            (element) => element.id == ocurrencyUpdate.typeOcurrencyId!.id));
 
     ocurrency.anexos = ocurrencyUpdate.anexos;
     listAnexos.addAll(ocurrency.anexos!);

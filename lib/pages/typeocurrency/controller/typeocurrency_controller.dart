@@ -58,6 +58,13 @@ class TypeOcurrencyController extends GetxController {
     update();
   }
 
+  List<TypeOcurrencyModel> get selectTypeOcurrency {
+    final List<TypeOcurrencyModel> selectionTypeOcurrency = [];
+    selectionTypeOcurrency
+        .addAll(allTypeOcurrencyFiltered.map((e) => e).toList());
+    return selectionTypeOcurrency;
+  }
+
   Future<void> getAllTypeOcurrency({bool? injection}) async {
     if (injection == false) setLoading(true);
     GenericsResult<TypeOcurrencyModel> typeOcurrencyResult =
