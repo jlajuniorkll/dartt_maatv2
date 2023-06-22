@@ -61,19 +61,22 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                             icon: const Icon(Icons.close),
                           )),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Align(
-                          alignment: Alignment.topLeft,
-                          child: IconButton(
-                            onPressed: () {
-                              Get.back();
-                              controller.setPage(0);
-                              controllerOcurrency.clearAll(deleteAnexos: true);
-                            },
-                            icon: const Icon(Icons.restart_alt),
-                          )),
-                    ),
+                    if (controllerOcurrency.ocurrency.id == null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Align(
+                            alignment: Alignment.topLeft,
+                            child: IconButton(
+                              onPressed: () {
+                                controller.setPage(0);
+                                controllerOcurrency.clearAll(
+                                    deleteAnexos:
+                                        controllerOcurrency.ocurrency.id ==
+                                            null);
+                              },
+                              icon: const Icon(Icons.restart_alt),
+                            )),
+                      ),
                   ],
                 ),
                 ExpandablePageView(
@@ -155,7 +158,10 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                                               controllerOcurrency.update();
                                             }
                                           : null,
-                                      child: const Text('Finalizar'),
+                                      child: controllerOcurrency.ocurrency.id !=
+                                              null
+                                          ? const Text('Atualizar')
+                                          : const Text('Finalizar'),
                                     );
                                   })),
                             )

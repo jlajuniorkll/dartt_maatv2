@@ -19,12 +19,12 @@ class StatusController extends GetxController {
   List<StatusModel> allStatus = [];
   StatusModel status = StatusModel();
   bool reorder = false;
-  StatusModel? statusSelected;
+//  StatusModel? statusSelected;
 
-  void setStatusSelected(StatusModel statusSelec) {
-    statusSelected = statusSelec;
-    update();
-  }
+  //void setStatusSelected(StatusModel statusSelec) {
+  //  statusSelected = statusSelec;
+  //  update();
+  // }
 
   void setReoder(bool value) {
     reorder = value;

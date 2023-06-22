@@ -1,7 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:dartt_maat_v2/models/channel_model.dart';
+import 'package:dartt_maat_v2/models/status_model.dart';
 import 'package:dartt_maat_v2/models/user_model.dart';
+import 'package:dartt_maat_v2/pages/channel/controller/channel_controller.dart';
+import 'package:dartt_maat_v2/pages/status/controller/status_controller.dart';
 import 'package:dartt_maat_v2/results/generics_result.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,7 +48,6 @@ class OcurrencyController extends GetxController {
   OcurrencyModel ocurrency = OcurrencyModel();
   ClienteModel cliente = ClienteModel();
   ProcuradorModel procurador = ProcuradorModel();
-  TypeOcurrencyModel typeOcurrency = TypeOcurrencyModel();
   late FornecedorModel forn;
 
   bool isLoading = false;
@@ -72,7 +75,6 @@ class OcurrencyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // ocurrency.previsao = Previsao.setPrevisao()[0];
     getAllOcurrency();
   }
 
@@ -129,8 +131,22 @@ class OcurrencyController extends GetxController {
   }
 
   void setTypeOcurrency(TypeOcurrencyModel value) {
-    typeOcurrency = value;
     ocurrency.typeOcurrencyId = value;
+    update();
+  }
+
+  void setStatusOcurrency(StatusModel value) {
+    ocurrency.status = value;
+    update();
+  }
+
+  void setChannelOcurrency(ChannelModel value) {
+    ocurrency.channel = value;
+    update();
+  }
+
+  void setUserOcurrency(UserModel value) {
+    ocurrency.responsavel = value;
     update();
   }
 
@@ -291,6 +307,8 @@ class OcurrencyController extends GetxController {
     bairroController.text = '';
     cidadeController.text = '';
     estadoController.text = '';
+    numeroController.text = '';
+    cepController.text = '';
     update();
   }
 
@@ -506,35 +524,45 @@ class OcurrencyController extends GetxController {
   }
 
   void finalizarReclamacao() async {
-    cliente.procurador = ProcuradorModel(
-        id: procurador.id,
-        nome: procurador.nome,
-        cpf: procurador.cpf,
-        nascimento: procurador.nascimento);
+    if (ocurrency.id != null) {
+      ComentarioModel commm = ComentarioModel(
+          description: "Reclamação atualizada",
+          dataComentario: ocurrency.dataRegistro,
+          usuario: ocurrency.user);
+      commentarios.add(commm);
+      ocurrency.comentarios = commentarios;
 
-    final userController = Get.find<UserController>();
-    ocurrency.user = UserModel(
-      id: userController.usuarioLogado!.id,
-      name: userController.usuarioLogado!.name,
-      cpf: userController.usuarioLogado!.cpf,
-      email: userController.usuarioLogado!.email,
-      typeUser: userController.usuarioLogado!.typeUser,
-    );
-    ocurrency.dataOcorrencia = dataOcorrenciaController.text;
-    ocurrency.cliente = cliente;
-    ocurrency.fornecedores = listFornecedor;
-    ocurrency.anexos = listAnexos;
-    // ocurrency.previsao = Previsao(id: '0', name: 'No prazo');
-    ocurrency.typeOcurrencyId = typeOcurrency;
-    ocurrency.dataAt = ocurrency.dataRegistro;
-    ComentarioModel commm = ComentarioModel(
-        description: "Reclamação aberta",
-        dataComentario: ocurrency.dataRegistro,
-        usuario: ocurrency.user);
-    commentarios.add(commm);
-    ocurrency.comentarios = commentarios;
-    ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
-    await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
+      await ocurrencyRepository.updateOcurrency(ocurrency: ocurrency);
+    } else {
+      cliente.procurador = ProcuradorModel(
+          id: procurador.id,
+          nome: procurador.nome,
+          cpf: procurador.cpf,
+          nascimento: procurador.nascimento);
+
+      final userController = Get.find<UserController>();
+      ocurrency.user = UserModel(
+        id: userController.usuarioLogado!.id,
+        name: userController.usuarioLogado!.name,
+        cpf: userController.usuarioLogado!.cpf,
+        email: userController.usuarioLogado!.email,
+        typeUser: userController.usuarioLogado!.typeUser,
+      );
+      ocurrency.dataOcorrencia = dataOcorrenciaController.text;
+      ocurrency.cliente = cliente;
+      ocurrency.fornecedores = listFornecedor;
+      ocurrency.anexos = listAnexos;
+      ComentarioModel commm = ComentarioModel(
+          description: "Reclamação aberta",
+          dataComentario: ocurrency.dataRegistro,
+          usuario: ocurrency.user);
+      commentarios.add(commm);
+      ocurrency.comentarios = commentarios;
+
+      ocurrency.dataAt = ocurrency.dataRegistro;
+      ocurrency.protocolo = await ocurrencyRepository.getProtocolo;
+      await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
+    }
     clearAll();
     getAllOcurrency();
     update();
@@ -542,19 +570,31 @@ class OcurrencyController extends GetxController {
 
   void setOcurrency(OcurrencyModel ocurrencyUpdate) {
     clearAll();
-    /*ocurrency.cliente!.procurador = ProcuradorModel(
-        nome: ocurrencyUpdate.cliente!.procurador!.nome,
-        cpf: ocurrencyUpdate.cliente!.procurador!.cpf,
-        nascimento: ocurrencyUpdate.cliente!.procurador!.nascimento);*/
+
     ocurrency.id = ocurrencyUpdate.id;
     ocurrency.user = ocurrencyUpdate.user;
     ocurrency.dataRegistro = ocurrencyUpdate.dataRegistro;
     ocurrency.status = ocurrencyUpdate.status;
-    ocurrency.responsavel = ocurrencyUpdate.responsavel;
-    ocurrency.channel = ocurrencyUpdate.channel;
+
+    var statusController = Get.find<StatusController>();
+    ocurrency.status = statusController.selectStatus.elementAt(statusController
+        .selectStatus
+        .indexWhere((element) => element.id == ocurrency.status!.id));
+
+    var userController = Get.find<UserController>();
+    ocurrency.responsavel = userController.selectResponsavel.elementAt(
+        userController.selectResponsavel
+            .indexWhere((element) => element.id == ocurrencyUpdate.user!.id));
+
+    var channelController = Get.find<ChannelController>();
+    ocurrency.channel = channelController.selectChannel.elementAt(
+        channelController.selectChannel.indexWhere(
+            (element) => element.id == ocurrencyUpdate.channel!.id));
+
     ocurrency.dataOcorrencia = ocurrencyUpdate.dataOcorrencia;
     dataOcorrenciaController.text = ocurrency.dataOcorrencia!;
     cliente = ocurrencyUpdate.cliente!;
+    ocurrency.cliente = cliente;
     dataNascimentoController.text = ocurrencyUpdate.cliente!.nascimento!;
 
     if (ocurrencyUpdate.cliente!.procurador!.nome != null) {
@@ -572,8 +612,6 @@ class OcurrencyController extends GetxController {
 
     ocurrency.fornecedores = ocurrencyUpdate.fornecedores;
     listFornecedor.addAll(ocurrency.fornecedores!);
-    // typeOcurrencyController.text = TextEditingController();
-    //TODO: falta ajustar o tipo de ocorrencia
     var typeController = Get.find<TypeOcurrencyController>();
     ocurrency.typeOcurrencyId = typeController.selectTypeOcurrency.elementAt(
         typeController.selectTypeOcurrency.indexWhere(
@@ -593,23 +631,29 @@ class OcurrencyController extends GetxController {
 
   void clearAll({bool? deleteAnexos = false}) {
     if (deleteAnexos == true) {
-      for (var la in ocurrency.anexos!) {
-        removeFileFirebase(la);
+      if (ocurrency.anexos != null) {
+        for (var la in ocurrency.anexos!) {
+          removeFileFirebase(la);
+        }
+        ocurrency.anexos!.clear();
+        listAnexos.clear();
       }
-      ocurrency.anexos!.clear();
-      listAnexos.clear();
     }
     limpaEnderecoCEP();
+    dataNascimentoController.text = '';
     OcurrencyModel.reset();
+    ocurrency = OcurrencyModel();
     listFornecedor.clear();
     listAnexos.clear();
     ClienteModel.reset();
-    ProcuradorModel.reset();
+    cliente = ClienteModel();
     TypeOcurrencyModel.reset();
     ProcuradorModel.reset();
     procurador = ProcuradorModel();
+    dataOcorrenciaController.text = '';
     dataNascProcuradorController.text = '';
     setWhithProcurador(false);
+    update();
   }
 
   Previsao getPrevisao(String data) {

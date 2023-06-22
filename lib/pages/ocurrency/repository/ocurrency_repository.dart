@@ -63,6 +63,15 @@ class OcurrencyRepository {
     }
   }
 
+  Future<void> updateOcurrency({required OcurrencyModel ocurrency}) async {
+    try {
+      await fireRef.doc(ocurrency.id).update(ocurrency.toJson());
+    } catch (e) {
+      // ignore: avoid_print
+      print(e.toString());
+    }
+  }
+
   // buscar todas os canais
   Future<GenericsResult<OcurrencyModel>> getAllOcurrency() async {
     try {

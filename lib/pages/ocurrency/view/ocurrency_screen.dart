@@ -20,6 +20,7 @@ class _OcurrencyScreenState extends State<OcurrencyScreen>
   List<Tab> _tabs = [];
   List<StatusModel> statusList = [];
   final controllerStatus = Get.find<StatusController>();
+  final controllerOcurrency = Get.find<OcurrencyController>();
 
   @override
   void initState() {
@@ -85,6 +86,9 @@ class _OcurrencyScreenState extends State<OcurrencyScreen>
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
+          if (controllerOcurrency.ocurrency.id != null) {
+            controllerOcurrency.clearAll();
+          }
           Get.dialog(const OcurrencyFormScreen());
         },
         label: const Text("Adicionar"),
