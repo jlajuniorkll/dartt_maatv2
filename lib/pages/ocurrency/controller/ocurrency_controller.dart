@@ -34,7 +34,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 class OcurrencyController extends GetxController {
   final ocurrencyRepository = OcurrencyRepository();
-  final GlobalKey<FormState> formKeyHeader = GlobalKey<FormState>();
+
   final GlobalKey<FormState> formKeyClient = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyAdress = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyProcurador = GlobalKey<FormState>();
@@ -564,8 +564,6 @@ class OcurrencyController extends GetxController {
       await ocurrencyRepository.addOcurrency(ocurrency: ocurrency);
     }
     clearAll();
-    getAllOcurrency();
-    update();
   }
 
   void setOcurrency(OcurrencyModel ocurrencyUpdate) {
@@ -622,11 +620,9 @@ class OcurrencyController extends GetxController {
     ocurrency.comentarios = ocurrencyUpdate.comentarios;
 
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
-    // TODO: criar campo para mostrar numero protocolo e data atualizacao
+    // TODO: data atualizacao
     ocurrency.protocolo = ocurrencyUpdate.protocolo;
     ocurrency.dataAt = getDataHoraAtual();
-
-    update();
   }
 
   void clearAll({bool? deleteAnexos = false}) {
@@ -653,6 +649,7 @@ class OcurrencyController extends GetxController {
     dataOcorrenciaController.text = '';
     dataNascProcuradorController.text = '';
     setWhithProcurador(false);
+    getAllOcurrency();
     update();
   }
 

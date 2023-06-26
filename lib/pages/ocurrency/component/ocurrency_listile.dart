@@ -1,6 +1,7 @@
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/page_routes/app_routes.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_badge.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_comments.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_form.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class OcurrencyListTile extends StatelessWidget {
                               (_) => /*OcurrencyFormComment(
                             ocurrency: widget.ocurrency,
                             comentarios: widget.ocurrency.comentarios)),*/
-                                  const OcurrencyFormScreen()),
+                                  const CommentOcurrency()),
                       child: Container(
                         padding: const EdgeInsets.only(left: 4, right: 6),
                         child: Icon(Icons.comment,

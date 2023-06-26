@@ -57,6 +57,10 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                             onPressed: () {
                               Get.back();
                               controller.setPage(0);
+                              if (controllerOcurrency.ocurrency.id != null) {
+                                controllerOcurrency.clearAll(
+                                    deleteAnexos: false);
+                              }
                             },
                             icon: const Icon(Icons.close),
                           )),

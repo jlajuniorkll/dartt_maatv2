@@ -18,7 +18,7 @@ class HeaderFormInterno extends StatelessWidget {
     final userController = Get.find<UserController>();
     final statusController = Get.find<StatusController>();
     final channelController = Get.find<ChannelController>();
-    final FocusNode _focusNode = FocusNode();
+    final FocusNode focusNode = FocusNode();
     return Form(
       key: controller.formKeyHeader,
       child: Column(
@@ -158,7 +158,7 @@ class HeaderFormInterno extends StatelessWidget {
                       child: ButtonTheme(
                         alignedDropdown: true,
                         child: DropdownButtonFormField<UserModel>(
-                          focusNode: _focusNode,
+                          focusNode: focusNode,
                           isExpanded: true,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.account_circle),
@@ -171,7 +171,7 @@ class HeaderFormInterno extends StatelessWidget {
                           value: controller.ocurrency.responsavel,
                           onChanged: (UserModel? newValue) {
                             controller.setUserOcurrency(newValue!);
-                            _focusNode.nextFocus();
+                            focusNode.nextFocus();
                           },
                           onSaved: (newValue) {
                             controller.setUserOcurrency(newValue!);
