@@ -35,6 +35,7 @@ import 'package:pdf/widgets.dart' as pw;
 class OcurrencyController extends GetxController {
   final ocurrencyRepository = OcurrencyRepository();
 
+  final GlobalKey<FormState> formKeyHeader = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyClient = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyAdress = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyProcurador = GlobalKey<FormState>();

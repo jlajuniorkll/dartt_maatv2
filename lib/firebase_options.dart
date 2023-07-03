@@ -23,9 +23,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -58,25 +64,5 @@ class DefaultFirebaseOptions {
     messagingSenderId: '320954016331',
     projectId: 'procon-alegrete',
     storageBucket: 'procon-alegrete.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDmSxxiGjM6lifp-9akknGrs05T4mNnSlk',
-    appId: '1:320954016331:ios:dd9c9437e915e159ea63ce',
-    messagingSenderId: '320954016331',
-    projectId: 'procon-alegrete',
-    storageBucket: 'procon-alegrete.appspot.com',
-    iosClientId: '320954016331-kuemdqt06j74ngnpisscilf8tio8ri7i.apps.googleusercontent.com',
-    iosBundleId: 'com.example.darttMaatV2',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDmSxxiGjM6lifp-9akknGrs05T4mNnSlk',
-    appId: '1:320954016331:ios:dd9c9437e915e159ea63ce',
-    messagingSenderId: '320954016331',
-    projectId: 'procon-alegrete',
-    storageBucket: 'procon-alegrete.appspot.com',
-    iosClientId: '320954016331-kuemdqt06j74ngnpisscilf8tio8ri7i.apps.googleusercontent.com',
-    iosBundleId: 'com.example.darttMaatV2',
   );
 }

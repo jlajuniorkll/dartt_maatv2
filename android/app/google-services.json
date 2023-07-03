@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "320954016331",
+    "project_id": "procon-alegrete",
+    "storage_bucket": "procon-alegrete.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320954016331:android:6b85a8e43004e988ea63ce",
+        "android_client_info": {
+          "package_name": "com.example.dartt_maat_v2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320954016331-0nlvrk1jqlv8b6hp0rtfr4hksh3l8cdr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT_b_cEeFBaaNDlDr9v31pzMkTbJxh1uQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320954016331-0nlvrk1jqlv8b6hp0rtfr4hksh3l8cdr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "320954016331-kuemdqt06j74ngnpisscilf8tio8ri7i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.darttMaatV2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
