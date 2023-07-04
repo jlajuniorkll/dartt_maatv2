@@ -14,7 +14,7 @@ class PrevisaoDashboard extends StatelessWidget {
     return Center(
         child: SfCircularChart(
             title: ChartTitle(text: 'Reclamações por prazos'),
-            legend: Legend(isVisible: true),
+            legend: const Legend(isVisible: true),
             series: <CircularSeries>[
           // Renders doughnut chart
           DoughnutSeries<ChartData, String>(

@@ -17,7 +17,7 @@ class StatusDashBoard extends StatelessWidget {
           // Enables the tooltip for all the series in chart
           tooltipBehavior: TooltipBehavior(enable: true),
           title: ChartTitle(text: 'Reclamações por situação'),
-          legend: Legend(isVisible: true),
+          legend: const Legend(isVisible: true),
           series: <CircularSeries>[
             // Render pie chart
             PieSeries<ChartData, String>(

@@ -13,7 +13,7 @@ class TempoDashboard extends StatelessWidget {
     return Center(
         child: SfCircularChart(
             title: ChartTitle(text: 'Tempo Médio/Estimado'),
-            legend: Legend(isVisible: true),
+            legend: const Legend(isVisible: true),
             series: <CircularSeries>[
           // Renders doughnut chart
           DoughnutSeries<ChartData, String>(
