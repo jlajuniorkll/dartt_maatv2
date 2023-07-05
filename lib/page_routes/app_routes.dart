@@ -40,7 +40,7 @@ abstract class AppPages {
         page: () => const TypeOcurrencyScreen()),
     GetPage(name: PageRoutes.ocurrency, page: () => const OcurrencyScreen()),
     GetPage(name: PageRoutes.ocurrencyDetail, page: () => ScreenDetail()),
-    GetPage(name: PageRoutes.comments, page: () => const CommentsScreen()),
+    GetPage(name: PageRoutes.comments, page: () => CommentsScreen()),
   ];
 }
 

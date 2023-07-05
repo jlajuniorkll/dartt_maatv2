@@ -75,7 +75,12 @@ class OcurrencyListTile extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => Get.toNamed(PageRoutes.comments),
+                      onTap: () async {
+                        await Get.find<OcurrencyController>()
+                            .getAllComentarios(ocurrency: ocurrencyReceived);
+                        Get.toNamed(PageRoutes.comments,
+                            arguments: ocurrencyReceived);
+                      },
                       child: Container(
                         padding: const EdgeInsets.only(left: 4, right: 6),
                         child: Icon(Icons.comment,

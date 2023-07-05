@@ -43,6 +43,8 @@ class OcurrencyController extends GetxController {
   final GlobalKey<FormState> formKeyFornecedor = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyDetails = GlobalKey<FormState>();
 
+  final usuarioLogado = Get.find<UserController>().usuarioLogado;
+
   List<FornecedorModel> listFornecedor = [];
   List<AnexoModel> listAnexos = [];
   List<ComentarioModel> commentarios = [];
@@ -65,6 +67,7 @@ class OcurrencyController extends GetxController {
   TextEditingController cepController = TextEditingController();
   TextEditingController cnpjController = TextEditingController();
   TextEditingController typeOcurrencyController = TextEditingController();
+  TextEditingController comentarioController = TextEditingController();
 
   RxBool notSuggestion = true.obs;
   double progress = 0.0;
@@ -72,6 +75,7 @@ class OcurrencyController extends GetxController {
   bool notValidateAdress = false;
 
   List<OcurrencyModel> allOcurrency = [];
+  List<ComentarioModel> allComents = [];
 
   @override
   void onInit() {
@@ -621,7 +625,7 @@ class OcurrencyController extends GetxController {
     ocurrency.comentarios = ocurrencyUpdate.comentarios;
 
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
-    // TODO: data atualizacao
+    // TODO: data atualizacao, alteracao de responsavel, filtros e dashboard
     ocurrency.protocolo = ocurrencyUpdate.protocolo;
     ocurrency.dataAt = getDataHoraAtual();
   }
@@ -652,6 +656,21 @@ class OcurrencyController extends GetxController {
     setWhithProcurador(false);
     getAllOcurrency();
     update();
+  }
+
+  void cleanInputComment() {
+    comentarioController.clear();
+  }
+
+  Future<bool> addComment(String comment, OcurrencyModel ocurrency) async {
+    ComentarioModel comentario = ComentarioModel(
+        usuario: usuarioLogado,
+        description: comment,
+        dataComentario: getDataHoraAtual());
+    await ocurrencyRepository.addComment(
+        comentario: comentario, ocurrency: ocurrency);
+    getAllComentarios(ocurrency: ocurrency);
+    return true;
   }
 
   Previsao getPrevisao(String data) {
@@ -705,10 +724,34 @@ class OcurrencyController extends GetxController {
     });
   }
 
+  Future<void> getAllComentarios({required OcurrencyModel ocurrency}) async {
+    setLoading(true);
+    GenericsResult<ComentarioModel> commentsResult =
+        await ocurrencyRepository.getAllComentarios(ocurrency: ocurrency);
+    setLoading(false);
+
+    commentsResult.when(success: (data) {
+      allComents.assignAll(data);
+      update();
+    }, error: (message) {
+      Get.snackbar(
+        "Tente novamente",
+        "Erro ao buscar comentarios ou não existe nenhuma ocorrência registrada!",
+        backgroundColor: Colors.yellow,
+        snackPosition: SnackPosition.BOTTOM,
+        borderColor: Colors.yellow,
+        colorText: Colors.black,
+        borderRadius: 0,
+        borderWidth: 2,
+        barBlur: 0,
+      );
+    });
+  }
+
   Future<Uint8List> fileOcurrencyPDF(OcurrencyModel ocurrency) async {
     setLoading(true);
     final pdf = pw.Document();
-    final ByteData bytes1 = await rootBundle.load('images/procon.png');
+    final ByteData bytes1 = await rootBundle.load('assets/images/procon.png');
     final Uint8List img1 = bytes1.buffer.asUint8List();
 
     pdf.addPage(pw.MultiPage(

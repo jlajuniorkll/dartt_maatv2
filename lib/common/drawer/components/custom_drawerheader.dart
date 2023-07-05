@@ -36,7 +36,7 @@ class CustomDrawerHeader extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Image.asset(
-                    'images/procon.png',
+                    'assets/images/procon.png',
                     width: 100,
                     height: 100,
                   ),

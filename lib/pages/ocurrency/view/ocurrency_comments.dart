@@ -1,15 +1,20 @@
-import 'package:dartt_maat_v2/config/custom_colors.dart';
+import 'package:dartt_maat_v2/common/ballon_card.dart';
+import 'package:dartt_maat_v2/models/ocurrency_model.dart';
+import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
+import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CommentsScreen extends StatelessWidget {
-  const CommentsScreen({super.key});
+  CommentsScreen({super.key});
+  final OcurrencyModel ocurrency = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text('Comentários'),
+          title: Text('Chat protocolo: ${ocurrency.protocolo}'),
           centerTitle: true,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
@@ -25,45 +30,64 @@ class CommentsScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: Stack(
-          children: [
-            Positioned(
-                bottom: 4,
-                left: 8,
-                right: 80,
-                child: Card(
-                  elevation: 10,
-                  child: TextFormField(
-                      // initialValue: initialText,
-                      autofocus: true,
-                      textInputAction: TextInputAction.search,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Digite aqui seu comentário...",
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 24),
-                      ),
-                      onFieldSubmitted: (text) {
-                        Navigator.of(context).pop(text);
-                      }),
-                )),
-            Positioned(
-              bottom: 4,
-              right: 0,
-              child: RawMaterialButton(
-                onPressed: () {},
-                elevation: 5,
-                fillColor: CustomColors.customSwatchColor,
-                padding: const EdgeInsets.all(15.0),
-                shape: const CircleBorder(),
-                child: const Icon(
-                  Icons.send,
-                  size: 24.0,
-                  color: Colors.white,
+        body: GetBuilder<OcurrencyController>(builder: (controller) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  reverse: true,
+                  itemCount: controller.allComents.length,
+                  itemBuilder: (_, index) {
+                    final usuarioLogado =
+                        Get.find<UserController>().usuarioLogado;
+                    bool isMe = false;
+                    String title = ocurrency.responsavel!.name!;
+                    if (controller.allComents[index].usuario!.id ==
+                        usuarioLogado!.id) {
+                      isMe = true;
+                      title = usuarioLogado.name!;
+                    }
+                    final message = controller.allComents[index].description!;
+                    final dataComentario =
+                        controller.allComents[index].dataComentario!;
+                    return BalloonCard(
+                        title: title,
+                        message: message,
+                        isMe: isMe,
+                        dataComentario: dataComentario);
+                  },
                 ),
               ),
-            )
-          ],
-        ));
+              const SizedBox(height: 10),
+              Container(
+                color: Colors.grey.shade200,
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controller.comentarioController,
+                        decoration: const InputDecoration(
+                          hintText: 'Digite uma mensagem...',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () async {
+                        final saveOK = await controller.addComment(
+                            controller.comentarioController.text, ocurrency);
+                        if (saveOK) {
+                          controller.cleanInputComment();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }));
   }
 }
