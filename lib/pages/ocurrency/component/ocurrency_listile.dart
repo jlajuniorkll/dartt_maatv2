@@ -1,5 +1,6 @@
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
 import 'package:dartt_maat_v2/page_routes/app_routes.dart';
+import 'package:dartt_maat_v2/pages/comments/controller/comments_controller.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_badge.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/component/ocurrency_form.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
@@ -76,7 +77,7 @@ class OcurrencyListTile extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        await Get.find<OcurrencyController>()
+                        await Get.find<CommentsController>()
                             .getAllComentarios(ocurrency: ocurrencyReceived);
                         Get.toNamed(PageRoutes.comments,
                             arguments: ocurrencyReceived);

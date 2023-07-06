@@ -6,6 +6,7 @@ import 'package:dartt_maat_v2/pages/channel/controller/channel_controller.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
 import 'package:dartt_maat_v2/pages/status/controller/status_controller.dart';
 import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
+import 'package:dartt_maat_v2/services/util_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,6 +20,7 @@ class HeaderFormInterno extends StatelessWidget {
     final statusController = Get.find<StatusController>();
     final channelController = Get.find<ChannelController>();
     final FocusNode focusNode = FocusNode();
+    final utilServices = UtilsServices();
     return Form(
       key: controller.formKeyHeader,
       child: Column(
@@ -60,7 +62,7 @@ class HeaderFormInterno extends StatelessWidget {
                 CustomTextField(
                     label: "Data Atual/Registro",
                     iniValue: controller.ocurrency.dataRegistro ??
-                        controller.getDataHoraAtual(),
+                        utilServices.getDataHoraAtual(),
                     onSaved: (newDataAt) =>
                         controller.ocurrency.dataRegistro = newDataAt,
                     isInActive: true),

@@ -7,6 +7,7 @@ import 'package:dartt_maat_v2/models/user_model.dart';
 import 'package:dartt_maat_v2/pages/channel/controller/channel_controller.dart';
 import 'package:dartt_maat_v2/pages/status/controller/status_controller.dart';
 import 'package:dartt_maat_v2/results/generics_result.dart';
+import 'package:dartt_maat_v2/services/util_services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 class OcurrencyController extends GetxController {
   final ocurrencyRepository = OcurrencyRepository();
-
+  final utilServices = UtilsServices();
   final GlobalKey<FormState> formKeyHeader = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyClient = GlobalKey<FormState>();
   final GlobalKey<FormState> formKeyAdress = GlobalKey<FormState>();
@@ -67,7 +68,6 @@ class OcurrencyController extends GetxController {
   TextEditingController cepController = TextEditingController();
   TextEditingController cnpjController = TextEditingController();
   TextEditingController typeOcurrencyController = TextEditingController();
-  TextEditingController comentarioController = TextEditingController();
 
   RxBool notSuggestion = true.obs;
   double progress = 0.0;
@@ -75,7 +75,6 @@ class OcurrencyController extends GetxController {
   bool notValidateAdress = false;
 
   List<OcurrencyModel> allOcurrency = [];
-  List<ComentarioModel> allComents = [];
 
   @override
   void onInit() {
@@ -163,15 +162,6 @@ class OcurrencyController extends GetxController {
   void setremoveListFornecedor(FornecedorModel value) {
     listFornecedor.remove(value);
     update();
-  }
-
-  String getDataHoraAtual() {
-    var dia = DateTime.now().day;
-    var mes = DateTime.now().month;
-    var ano = DateTime.now().year.toString().padLeft(2, "0");
-    var hora = DateTime.now().hour.toString().padLeft(2, "0");
-    var min = DateTime.now().minute.toString().padLeft(2, "0");
-    return '$dia/$mes/$ano - $hora:$min';
   }
 
   void setDataFato(DateTime value) {
@@ -627,7 +617,7 @@ class OcurrencyController extends GetxController {
     ocurrency.ocorrencia = ocurrencyUpdate.ocorrencia;
     // TODO: data atualizacao, alteracao de responsavel, filtros e dashboard
     ocurrency.protocolo = ocurrencyUpdate.protocolo;
-    ocurrency.dataAt = getDataHoraAtual();
+    ocurrency.dataAt = utilServices.getDataHoraAtual();
   }
 
   void clearAll({bool? deleteAnexos = false}) {
@@ -656,21 +646,6 @@ class OcurrencyController extends GetxController {
     setWhithProcurador(false);
     getAllOcurrency();
     update();
-  }
-
-  void cleanInputComment() {
-    comentarioController.clear();
-  }
-
-  Future<bool> addComment(String comment, OcurrencyModel ocurrency) async {
-    ComentarioModel comentario = ComentarioModel(
-        usuario: usuarioLogado,
-        description: comment,
-        dataComentario: getDataHoraAtual());
-    await ocurrencyRepository.addComment(
-        comentario: comentario, ocurrency: ocurrency);
-    getAllComentarios(ocurrency: ocurrency);
-    return true;
   }
 
   Previsao getPrevisao(String data) {
@@ -713,30 +688,6 @@ class OcurrencyController extends GetxController {
       Get.snackbar(
         "Tente novamente",
         "Erro ao buscar lista de ocorrência ou não existe nenhuma ocorrência registrada!",
-        backgroundColor: Colors.yellow,
-        snackPosition: SnackPosition.BOTTOM,
-        borderColor: Colors.yellow,
-        colorText: Colors.black,
-        borderRadius: 0,
-        borderWidth: 2,
-        barBlur: 0,
-      );
-    });
-  }
-
-  Future<void> getAllComentarios({required OcurrencyModel ocurrency}) async {
-    setLoading(true);
-    GenericsResult<ComentarioModel> commentsResult =
-        await ocurrencyRepository.getAllComentarios(ocurrency: ocurrency);
-    setLoading(false);
-
-    commentsResult.when(success: (data) {
-      allComents.assignAll(data);
-      update();
-    }, error: (message) {
-      Get.snackbar(
-        "Tente novamente",
-        "Erro ao buscar comentarios ou não existe nenhuma ocorrência registrada!",
         backgroundColor: Colors.yellow,
         snackPosition: SnackPosition.BOTTOM,
         borderColor: Colors.yellow,

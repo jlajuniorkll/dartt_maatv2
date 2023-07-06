@@ -64,21 +64,6 @@ class OcurrencyRepository {
     }
   }
 
-  Future<bool> addComment(
-      {required ComentarioModel comentario,
-      required OcurrencyModel ocurrency}) async {
-    try {
-      await fireRef
-          .doc(ocurrency.id)
-          .collection('comentarios')
-          .doc()
-          .set(comentario.toJson());
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   Future<void> updateOcurrency({required OcurrencyModel ocurrency}) async {
     try {
       await fireRef.doc(ocurrency.id).update(ocurrency.toJson());

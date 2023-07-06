@@ -11,6 +11,7 @@ import 'package:dartt_maat_v2/pages/status/view/status_screen.dart';
 import 'package:dartt_maat_v2/pages/typeocurrency/binding/typeocurrency_binding.dart';
 import 'package:dartt_maat_v2/pages/typeocurrency/view/typeocurrency_screen.dart';
 import 'package:dartt_maat_v2/pages/user/binding/user_binding.dart';
+import 'package:dartt_maat_v2/pages/comments/binding/comments_binding.dart';
 import 'package:dartt_maat_v2/pages/user/view/user_screen.dart';
 import 'package:dartt_maat_v2/pages/ocurrency/view/ocurrency_comments.dart';
 import 'package:get/route_manager.dart';
@@ -25,6 +26,7 @@ abstract class AppPages {
           StatusBinding(),
           TypeOcurrencyBinding(),
           ChannelBinding(),
+          CommentsBinding(),
         ]),
     GetPage(
       name: PageRoutes.signin,
@@ -40,7 +42,10 @@ abstract class AppPages {
         page: () => const TypeOcurrencyScreen()),
     GetPage(name: PageRoutes.ocurrency, page: () => const OcurrencyScreen()),
     GetPage(name: PageRoutes.ocurrencyDetail, page: () => ScreenDetail()),
-    GetPage(name: PageRoutes.comments, page: () => CommentsScreen()),
+    GetPage(
+      name: PageRoutes.comments,
+      page: () => CommentsScreen(),
+    ),
   ];
 }
 

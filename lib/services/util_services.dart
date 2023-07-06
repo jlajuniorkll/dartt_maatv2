@@ -44,4 +44,13 @@ class UtilsServices {
     var ano = DateTime.now().year.toString();
     return '$dia/$mes/$ano';
   }
+
+  String getDataHoraAtual() {
+    var dia = DateTime.now().day;
+    var mes = DateTime.now().month;
+    var ano = DateTime.now().year.toString().padLeft(2, "0");
+    var hora = DateTime.now().hour.toString().padLeft(2, "0");
+    var min = DateTime.now().minute.toString().padLeft(2, "0");
+    return '$dia/$mes/$ano - $hora:$min';
+  }
 }

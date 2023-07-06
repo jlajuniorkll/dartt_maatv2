@@ -41,7 +41,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
       child: SingleChildScrollView(
         child: SizedBox(
           width: isMobile ? widhtMobile : widhtWeb,
-          child: Card(
+          child: Dialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             child: Column(
@@ -103,7 +103,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                       controller.page > 0
                           ? SizedBox(
                               height: 32,
-                              width: 120,
+                              width: 100,
                               child: TextButton.icon(
                                 onPressed: () {
                                   setState(() {
@@ -116,7 +116,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                             )
                           : const SizedBox(
                               height: 32,
-                              width: 120,
+                              width: 100,
                             ),
                       Expanded(
                         child: Center(
@@ -131,7 +131,7 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                       controller.page < (qtdPages - 1)
                           ? SizedBox(
                               height: 32,
-                              width: 120,
+                              width: 100,
                               child: TextButton.icon(
                                 onPressed: () {
                                   setState(() {
@@ -146,7 +146,6 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
                               padding: const EdgeInsets.all(8.0),
                               child: SizedBox(
                                   height: 32,
-                                  width: 120,
                                   child: GetBuilder<OcurrencyController>(
                                       builder: (controllerOcurrency) {
                                     return ElevatedButton(

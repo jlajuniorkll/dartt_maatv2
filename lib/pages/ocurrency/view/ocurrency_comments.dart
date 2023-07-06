@@ -1,6 +1,6 @@
 import 'package:dartt_maat_v2/common/ballon_card.dart';
 import 'package:dartt_maat_v2/models/ocurrency_model.dart';
-import 'package:dartt_maat_v2/pages/ocurrency/controller/ocurrency_controller.dart';
+import 'package:dartt_maat_v2/pages/comments/controller/comments_controller.dart';
 import 'package:dartt_maat_v2/pages/user/controller/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +30,7 @@ class CommentsScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: GetBuilder<OcurrencyController>(builder: (controller) {
+        body: GetBuilder<CommentsController>(builder: (controller) {
           return Column(
             children: [
               Expanded(
@@ -41,17 +41,16 @@ class CommentsScreen extends StatelessWidget {
                     final usuarioLogado =
                         Get.find<UserController>().usuarioLogado;
                     bool isMe = false;
-                    String title = ocurrency.responsavel!.name!;
                     if (controller.allComents[index].usuario!.id ==
                         usuarioLogado!.id) {
                       isMe = true;
-                      title = usuarioLogado.name!;
                     }
+                    final title = controller.allComents[index].usuario!.name;
                     final message = controller.allComents[index].description!;
                     final dataComentario =
                         controller.allComents[index].dataComentario!;
                     return BalloonCard(
-                        title: title,
+                        title: title!,
                         message: message,
                         isMe: isMe,
                         dataComentario: dataComentario);
@@ -79,7 +78,7 @@ class CommentsScreen extends StatelessWidget {
                         final saveOK = await controller.addComment(
                             controller.comentarioController.text, ocurrency);
                         if (saveOK) {
-                          controller.cleanInputComment();
+                          controller.cleanScreenComment();
                         }
                       },
                     ),

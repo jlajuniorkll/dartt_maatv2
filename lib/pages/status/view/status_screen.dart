@@ -83,20 +83,23 @@ class StatusScreen extends StatelessWidget {
             data: ThemeData(canvasColor: Colors.transparent),
             child: ReorderableListView.builder(
               key: UniqueKey(),
-              footer: controller.reorder == true ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                child: SizedBox(
-                    height: 50,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          controller.confirmReorder();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF00CCFF),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                        child: const Text('Salvar ordem'))),
-              ): null,
+              footer: controller.reorder == true
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 8.0),
+                      child: SizedBox(
+                          height: 50,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                controller.confirmReorder();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF00CCFF),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8))),
+                              child: const Text('Salvar ordem'))),
+                    )
+                  : null,
               padding: const EdgeInsets.all(16.0),
               itemCount: controller.filteredStatus.length,
               itemBuilder: (_, index) {
