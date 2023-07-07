@@ -42,6 +42,8 @@ class _OcurrencyFormScreenState extends State<OcurrencyFormScreen>
         child: SizedBox(
           width: isMobile ? widhtMobile : widhtWeb,
           child: Dialog(
+            insetPadding:
+                isMobile ? const EdgeInsets.symmetric(horizontal: 8) : null,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             child: Column(
